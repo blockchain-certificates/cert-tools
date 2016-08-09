@@ -93,3 +93,7 @@ venv*/
 
 # IntelliJ
 .idea/*
+
+data/unsigned_certificates/*.json
+data/rosters/*.csv
+data/certificate_templates/*.json
