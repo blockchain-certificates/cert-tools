@@ -1,10 +1,12 @@
 import helpers
+import os
 
-
+##############################
+## TEMPLATE CREATION CONFIG ##
+##############################
 issuer_logo_file = 'data/images/issuer-logo.png'
 issuer_signature_file = 'data/images/issuer-signature.png'
 cert_image_file = 'data/images/cert-image.png'
-
 
 # issuer information
 issuer_url = 'http://issuer.org'
@@ -25,10 +27,26 @@ certificate_title = 'This is the certificate title'
 certificate_id = helpers.urljoin_wrapper(issuer_certs_url, '/criteria/YYYY/mm/certificate_id.json') # e.g. /criteria/2016/01/alumni.json
 certificate_image = helpers.encode_image(cert_image_file)
 
-# output directories
-template_dir = 'data/certificate_templates'
+###################
+## TEMPLATE DATA ##
+###################
+# these are used by both
+template_dir = 'data/certificate_templates'  # template output directory
+template_file_name = 'test.json'
+
+##############################
+## INSTANTIATE BATCH CONFIG ##
+##############################
 unsigned_certificates_dir = 'data/unsigned_certificates'
 roster = 'data/rosters/roster.csv'
 
-template_file_name = 'test.json'
-
+#########################
+## IMPORT/EXPORT TOOLS ##
+#########################
+mongo_host_string = 'mongodb://localhost:27017'
+signed_certificates_dir = 'signed_certificates'
+transaction_ids_dir = 'transaction_ids'
+receipts_dir = 'receipts'
+signed_certificates_glob = os.path.join(signed_certificates_dir, '*.json')
+transaction_ids_glob = os.path.join(transaction_ids_dir, '*.txt')
+receipts_glob = os.path.join(receipts_dir, '*.json')

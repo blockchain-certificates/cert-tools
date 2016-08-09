@@ -97,3 +97,7 @@ venv*/
 data/unsigned_certificates/*.json
 data/rosters/*.csv
 data/certificate_templates/*.json
+data/signed_certificates/*.json
+data/transaction_ids/*.txt
+data/receipts/*.json
+
