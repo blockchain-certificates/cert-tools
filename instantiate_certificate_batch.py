@@ -1,3 +1,7 @@
+'''
+Merges a certificate template with recipients defined in a roster file. The result is
+unsigned certificates that can be given to cert-issuer.
+'''
 import json
 import uuid
 from datetime import date

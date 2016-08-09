@@ -1,3 +1,6 @@
+'''
+Creates a certificate template with merge tags for recipient/assertion-specific data.
+'''
 import json
 
 import config
