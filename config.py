@@ -27,6 +27,9 @@ certificate_title = 'This is the certificate title'
 certificate_id = helpers.urljoin_wrapper(issuer_certs_url, '/criteria/YYYY/mm/certificate_id.json') # e.g. /criteria/2016/01/alumni.json
 certificate_image = helpers.encode_image(cert_image_file)
 
+# whether to hash recipient emails
+hash_emails = False
+
 ###################
 ## TEMPLATE DATA ##
 ###################
