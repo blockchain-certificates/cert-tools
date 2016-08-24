@@ -11,47 +11,66 @@ import config
 import helpers
 import os
 import hashlib
-from collections import namedtuple
 from cert_schema.schema_tools import schema_validator
 import bcrypt
+import csv
+import jsonpath_helpers
 
-Recipient = namedtuple('Recipient', 'last_name first_name job_title date_range pubkey email')
+class Recipient:
+    def __init__(self, fields):
+        self.family_name = fields['familyName']
+        self.given_name = fields['givenName']
+        self.pubkey = fields['pubkey']
+        self.identity = fields['identity']
+
+        fields.pop('familyName', None)
+        fields.pop('givenName', None)
+        fields.pop('pubkey', None)
+        fields.pop('identity', None)
+
+        self.additional_fields = fields
 
 
 def hash_and_salt_email_address(email, salt):
     return 'sha256$' + hashlib.sha256(email + salt).hexdigest()
 
-def instantiate_assertion(cert, uid, issued_on, evidence):
+def instantiate_assertion(cert, uid, issued_on):
     cert['assertion']['issuedOn'] = issued_on
     cert['assertion']['uid'] = uid
     cert['assertion']['id'] = helpers.urljoin_wrapper(config.issuer_certs_url, uid)
-    if evidence:
-        cert['assertion']['evidence'] = evidence
-    else:
-        del cert['assertion']['evidence']
     return cert
 
 
 def instantiate_recipient(cert, recipient):
-    cert['recipient']['givenName'] = recipient.first_name
-    cert['recipient']['familyName'] = recipient.last_name
+    cert['recipient']['givenName'] = recipient.given_name
+    cert['recipient']['familyName'] = recipient.family_name
     cert['recipient']['pubkey'] = recipient.pubkey
     if config.hash_emails:
         # this is probably overkill, but if I'm generating a salt...
         salt = bcrypt.gensalt()
         cert['recipient']['salt'] = salt
-        cert['recipient']['identity'] = hash_and_salt_email_address(recipient.email, salt)
+        cert['recipient']['identity'] = hash_and_salt_email_address(recipient.identity, salt)
     else:
-        cert['recipient']['identity'] = recipient.email
+        cert['recipient']['identity'] = recipient.identity
+
+    if config.additional_per_recipient_fields:
+        if not recipient.additional_fields:
+            raise Exception('expected additional recipient fields in the csv file but none found')
+        for field in config.additional_per_recipient_fields:
+            cert = jsonpath_helpers.set_field(cert, field['path'], recipient.additional_fields[field['csv_column']])
+    else:
+        if recipient.additional_fields:
+            # throw an exception on this in case it's a user error. We may decide to remove this if it's a nuisance
+            raise Exception('there are fields in the csv file that are not expected by the additional_per_recipient_fields configuration')
 
 
 def create_unsigned_certificates_from_roster(roster, template, output_dir, issued_on=str(date.today())):
 
     recipients = []
-    with open(roster) as roster:
-        for line in roster.readlines():
-            parts = line.split(',')
-            r = Recipient(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5])
+    with open(roster, "r") as theFile:
+        reader = csv.DictReader(theFile)
+        for line in reader:
+            r = Recipient(line)
             recipients.append(r)
 
     with open(template) as template:
@@ -63,8 +82,7 @@ def create_unsigned_certificates_from_roster(roster, template, output_dir, issue
 
             cert = copy.deepcopy(template)
 
-            # TODO: add evidence to csv. Also optional fields
-            instantiate_assertion(cert, uid, issued_on, evidence=None)
+            instantiate_assertion(cert, uid, issued_on)
             instantiate_recipient(cert, recipient)
 
             # validate certificate before writing

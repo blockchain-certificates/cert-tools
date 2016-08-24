@@ -1,5 +1,4 @@
 import helpers
-import os
 
 ##############################
 ## TEMPLATE CREATION CONFIG ##
@@ -22,13 +21,41 @@ issuer_logo = helpers.encode_image(issuer_logo_file)
 # certificate information
 certificate_language = 'en-US'
 certificate_description = 'This is the display description of the certificate.'
-certificate_subtitle = ''
 certificate_title = 'This is the certificate title'
 certificate_id = helpers.urljoin_wrapper(issuer_certs_url, '/criteria/YYYY/mm/certificate_id.json') # e.g. /criteria/2016/01/alumni.json
 certificate_image = helpers.encode_image(cert_image_file)
 
 # whether to hash recipient emails
 hash_emails = False
+
+additional_global_fields = []
+additional_per_recipient_fields = []
+# can specify an array of additional global fields. For each additional field, you must indicate:
+# - the jsonpath to the field
+# - the global value to use
+# additional_global_fields = [
+#     {
+#         'path': '$.certificate.subtitle',
+#         'value': 'kim custom subtitle',
+#     }
+#]
+
+# can specify an array of additional per-recipient fields. For each additional field, you must indicate:
+# - the jsonpath to the field
+# - the merge_tag placeholder to use
+# - the csv column where the value (per recipient) can be found
+# additional_per_recipient_fields = [
+#     {
+#         'path': '$.assertion.evidence',
+#         'value': '*|EVIDENCE|*',
+#         'csv_column': 'jobTitle'
+#     },
+#     {
+#         'path': '$.certificate.subtitle',
+#         'value': '*|SUBTITLE|*',
+#         'csv_column': 'yearRange'
+#     }
+# ]
 
 ###################
 ## TEMPLATE DATA ##
@@ -42,14 +69,3 @@ template_file_name = 'test.json'
 ##############################
 unsigned_certificates_dir = 'data/unsigned_certificates'
 roster = 'data/rosters/roster.csv'
-
-#########################
-## IMPORT/EXPORT TOOLS ##
-#########################
-mongo_host_string = 'mongodb://localhost:27017'
-signed_certificates_dir = 'signed_certificates'
-transaction_ids_dir = 'transaction_ids'
-receipts_dir = 'receipts'
-signed_certificates_glob = os.path.join(signed_certificates_dir, '*.json')
-transaction_ids_glob = os.path.join(transaction_ids_dir, '*.txt')
-receipts_glob = os.path.join(receipts_dir, '*.json')

@@ -5,21 +5,21 @@ have been issued.
 import glob
 import json
 
-import config
+import import_config
 import gridfs
 import os
 from pymongo import MongoClient
 
 
 def create_certificates_mongo_collection(certificates_file_name):
-    json_files = glob.glob(config.signed_certificates_glob)
+    json_files = glob.glob(import_config.signed_certificates_glob)
     certificates = []
 
     for file in json_files:
         with open(file) as infile:
             # read corresponding transaction file to find transaction id
             tx1 = file.replace('.json', '.txt')
-            tx2 = tx1.replace(config.signed_certificates_dir, config.transaction_ids_dir)
+            tx2 = tx1.replace(import_config.signed_certificates_dir, import_config.transaction_ids_dir)
             with open(tx2) as tx_file:
                 content = infile.read()
                 tx = tx_file.read()
@@ -38,12 +38,12 @@ def create_certificates_mongo_collection(certificates_file_name):
 
 
 def create_certificates_mongo_collection_v2(certificates_file_name, txid):
-    json_files = glob.glob(config.signed_certificates_glob)
+    json_files = glob.glob(import_config.signed_certificates_glob)
     certificates = []
 
     for file in json_files:
         with open(file) as infile:
-            proof = file.replace(config.signed_certificates_dir, config.receipts_dir)
+            proof = file.replace(import_config.signed_certificates_dir, import_config.receipts_dir)
             with open(proof) as proof_file:
                 content = infile.read()
                 proof_str = proof_file.read()
@@ -64,9 +64,9 @@ def create_certificates_mongo_collection_v2(certificates_file_name, txid):
 
 
 def load_certificates_into_gridfs():
-    json_files = glob.glob(config.signed_certificates_glob)
+    json_files = glob.glob(import_config.signed_certificates_glob)
 
-    client = MongoClient(host=config.mongo_host_string)
+    client = MongoClient(host=import_config.mongo_host_string)
     fs = gridfs.GridFS(client.admin)
 
     for file in json_files:
@@ -77,7 +77,7 @@ def load_certificates_into_gridfs():
 
 
 def create_links(link_file_name):
-    json_files = glob.glob(config.signed_certificates_glob)
+    json_files = glob.glob(import_config.signed_certificates_glob)
 
     links = []
 
