@@ -7,7 +7,7 @@ import uuid
 from datetime import date
 import copy
 
-import config
+from sample_data import config
 import helpers
 import os
 import hashlib
@@ -86,7 +86,7 @@ def create_unsigned_certificates_from_roster(roster, template, output_dir, issue
             instantiate_recipient(cert, recipient)
 
             # validate certificate before writing
-            schema_validator.validate_v1_2_0(cert)
+            schema_validator.validate_unsigned_v1_2_0(cert)
 
             with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)

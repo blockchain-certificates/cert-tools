@@ -1,4 +1,4 @@
 pymongo>=3.0
-cert-schema>=1.2.11
+cert-schema>=1.2.13
 bcrypt>=3.1.0
 jsonpath-rw>=1.4.0

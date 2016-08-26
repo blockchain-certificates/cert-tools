@@ -136,8 +136,8 @@ def create_certificate_template(template_dir, template_file_name):
     recipient = create_recipient_section()
 
     raw_json = {
-        '@context': 'https://raw.githubusercontent.com/digital-certificates#',
-        '@type': 'DigitalCertificate',
+        '@context': 'https://w3id.org/blockcerts/context#',
+        '@type': 'CertificateDocument',
         'recipient': recipient,
         'assertion': assertion,
         'certificate': certificate,

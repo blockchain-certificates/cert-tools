@@ -48,12 +48,7 @@ additional_per_recipient_fields = []
 #     {
 #         'path': '$.assertion.evidence',
 #         'value': '*|EVIDENCE|*',
-#         'csv_column': 'jobTitle'
-#     },
-#     {
-#         'path': '$.certificate.subtitle',
-#         'value': '*|SUBTITLE|*',
-#         'csv_column': 'yearRange'
+#         'csv_column': 'evidence'
 #     }
 # ]
 
