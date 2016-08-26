@@ -7,7 +7,7 @@ import uuid
 from datetime import date
 import copy
 
-from sample_data import config
+import config
 import helpers
 import os
 import hashlib
