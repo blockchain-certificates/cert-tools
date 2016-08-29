@@ -16,6 +16,7 @@ import bcrypt
 import csv
 import jsonpath_helpers
 
+
 class Recipient:
     def __init__(self, fields):
         self.family_name = fields['familyName']
