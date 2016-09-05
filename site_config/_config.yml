@@ -1,0 +1,32 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+#relative_permalinks: true
+
+# Setup
+title:            'cert-tools'
+tagline:          'Technical documentation for the cert-tools project'
+description:      'A Blockchain Certificates Project'
+url:              'http://www.blockcerts.org'
+baseurl:          '/cert-tools'
+
+author:
+  name:           'Blockchain Certificates Team'
+  url:            'http://www.blockcerts.org'
+
+paginate:         5
+
+# Custom vars
+version:          0.0.1
+
+github:
+  repo:           'https://github.com/blockchain-certificates/cert-tools'
+
+# include: ["_pages"]
+
+gems: [jekyll-paginate]
+paginate: 5
+paginate_path: "page:num"
