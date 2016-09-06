@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/blockchain-certificates/cert-tools.svg?branch=master)](https://travis-ci.org/blockchain-certificates/cert-tools)
+
 # cert-tools
 Command line tools for designing certificate templates, instantiating a certificate batch, and import/export tasks
 
