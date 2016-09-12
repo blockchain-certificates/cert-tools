@@ -5,7 +5,7 @@ Command line tools for designing certificate templates, instantiating a certific
 
 see example of certificate template and batch creation in sample_data 
 
-## install
+## Install
 
 1. Ensure you have an python environment. [Recommendations](https://github.com/blockchain-certificates/developer-common-docs/blob/master/virtualenv.md)
 
@@ -14,7 +14,7 @@ see example of certificate template and batch creation in sample_data
     pip install -r requirements.txt
     ```
 
-## scripts
+## Scripts
 
 ### create_certificate_template.py
 
