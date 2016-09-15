@@ -15,22 +15,26 @@ see example of certificate template and batch creation in sample_data
   git clone https://github.com/blockchain-certificates/cert-tools.git && cd cert-tools
   ```
 
-3. Run cert-tools setup
+3. Run the setup script
 
   ```bash
   pip install .
   ```
 
-
-2. Run the setup script
-    ```bash
-    pip install .
-    ```
-
 ## Scripts
+
+The cert-tools setup script installs 2 scripts, which are described below:
+
 
 ### create_certificate_template.py
 
+#### Run
+
+```
+create-certificate-template -c conf.ini
+```
+
+#### About
 create a certificate template based on config.py. You can specify additional global fields (fields that apply for every certificate in the batch) and additional per-recipient fields (fields that you will specify per-recipient).
 
 additional_global_fields:  For each additional global field, you must indicate:
@@ -39,12 +43,15 @@ additional_global_fields:  For each additional global field, you must indicate:
 - the global value to use
 
 Example:
+
+```
     additional_global_fields = [
         {
             'path': '$.certificate.subtitle',
             'value': 'kim custom subtitle',
         }
    ]
+```
 
 additional_per_recipient_fields: Although these are per-recipient, we still use these for the template creation process. Except in this case, we apply merge tags as values. This is to allow additional tooling to replace instantiate_certificate_batch.py. For each additional per-recipient field, you must indicate:
 
@@ -53,6 +60,8 @@ additional_per_recipient_fields: Although these are per-recipient, we still use 
 - the csv column where the value (per recipient) can be found. This is used by instantiate_certificate_batch
 
 Example:
+
+```
     additional_per_recipient_fields = [
         {
             'path': '$.assertion.evidence',
@@ -60,9 +69,17 @@ Example:
             'csv_column': 'jobTitle'
         }
    ]
+```
    
    
 ### instantiate_certificate_batch.py
+
+#### Run
+```
+instantiate-certificate-batch -c conf.ini
+```
+
+#### About
 
 This script takes the template generated in the previous step and csv file (configurable, by default in rosters) as input. It generates a certificate per recipient based on the values in the csv file.
 
