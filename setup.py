@@ -20,8 +20,14 @@ setup(
     tests_require=['tox'],
     url='https://github.com/blockchain-certificates/cert-tools',
     license='MIT',
-    author_email='certs@media.mit.edu',
+    author_email='certs@mit.edu',
     long_description=long_description,
     packages=find_packages(),
-    install_requires=reqs
+    install_requires=reqs,
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'create-certificate-template = cert_tools.create_certificate_template:main',
+            'instantiate-certificate-batch = cert_tools.instantiate_certificate_batch:main',
+        ]}
 )

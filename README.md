@@ -9,9 +9,22 @@ see example of certificate template and batch creation in sample_data
 
 1. Ensure you have an python environment. [Recommendations](https://github.com/blockchain-certificates/developer-common-docs/blob/master/virtualenv.md)
 
-2. Install the dependencies
+2. Git clone the repository and change to the directory
+
+  ```bash
+  git clone https://github.com/blockchain-certificates/cert-tools.git && cd cert-tools
+  ```
+
+3. Run cert-tools setup
+
+  ```bash
+  pip install .
+  ```
+
+
+2. Run the setup script
     ```bash
-    pip install -r requirements.txt
+    pip install .
     ```
 
 ## Scripts

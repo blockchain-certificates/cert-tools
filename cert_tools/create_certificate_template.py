@@ -1,13 +1,13 @@
+#!/usr/bin/env
+
 '''
 Creates a certificate template with merge tags for recipient/assertion-specific data.
-TODO: update JSON LD context when we are settled
 '''
 import json
 import os
 
 from jsonpath_rw import parse, Root, Child, Fields
 
-import config
 import helpers
 import jsonpath_helpers
 
@@ -51,7 +51,7 @@ def update_json(json, path, value):
         return value
 
 
-def additional_global_fields(raw_json):
+def additional_global_fields(config, raw_json):
     if config.additional_global_fields:
         for field in config.additional_global_fields:
             jp = parse(field['path'])
@@ -73,19 +73,20 @@ def additional_global_fields(raw_json):
                         print('path is not valid! : %s', '.'.join(fields))
     return raw_json
 
+def create_certificate_section(config):
 
-def create_certificate_section():
+    data_dir = config.data_dir
     certificate = {
         '@type': 'Certificate',
         'title': config.certificate_title,
-        'image:certificate': config.certificate_image,
+        'image': helpers.encode_image(os.path.join(data_dir, config.cert_image_file)),
         'description': config.certificate_description,
         'id': config.certificate_id,
         'language': config.certificate_language,
         'issuer': {
             '@type': 'Issuer',
             'url': config.issuer_url,
-            'image:logo': config.issuer_logo,
+            'image': helpers.encode_image(os.path.join(data_dir, config.issuer_logo_file)),
             'email': config.issuer_email,
             'name': config.issuer_name,
             'id': config.issuer_id
@@ -95,7 +96,7 @@ def create_certificate_section():
     return certificate
 
 
-def create_verification_section():
+def create_verification_section(config):
     verify = {
         '@type': 'VerificationObject',
         'signer': config.issuer_public_key_url,
@@ -105,7 +106,7 @@ def create_verification_section():
     return verify
 
 
-def create_recipient_section():
+def create_recipient_section(config):
     recipient = {
         '@type': 'Recipient',
         'type': 'email',
@@ -118,22 +119,27 @@ def create_recipient_section():
     return recipient
 
 
-def create_assertion_section():
+def create_assertion_section(config):
+    data_dir = config.data_dir
     assertion = {
         '@type': 'Assertion',
         'issuedOn': '*|DATE|*',
-        'image:signature': config.issuer_signature,
+        'image:signature': helpers.encode_image(os.path.join(data_dir, config.issuer_signature_file)),
         'uid': '*|CERTUID|*',
         'id': helpers.urljoin_wrapper(config.issuer_certs_url, '*|CERTUID|*')
     }
     return assertion
 
 
-def create_certificate_template(template_dir, template_file_name):
-    certificate = create_certificate_section()
-    verify = create_verification_section()
-    assertion = create_assertion_section()
-    recipient = create_recipient_section()
+def create_certificate_template(config):
+    certificate = create_certificate_section(config)
+    verify = create_verification_section(config)
+    assertion = create_assertion_section(config)
+    recipient = create_recipient_section(config)
+
+    data_dir = config.data_dir
+    template_dir = config.template_dir
+    template_file_name = config.template_file_name
 
     raw_json = {
         '@context': 'https://w3id.org/blockcerts/context#',
@@ -152,11 +158,16 @@ def create_certificate_template(template_dir, template_file_name):
         for field in config.additional_per_recipient_fields:
             raw_json = jsonpath_helpers.set_field(raw_json, field['path'], field['value'])
 
-    with open(os.path.join(template_dir, template_file_name), 'w') as cert_template:
+    with open(os.path.join(data_dir, template_dir, template_file_name), 'w') as cert_template:
         json.dump(raw_json, cert_template)
 
     return raw_json
 
+def main():
+    import config
+    conf = config.get_config()
+    template = create_certificate_template(conf)
+    print('Created template!')
 
 if __name__ == "__main__":
-    template = create_certificate_template(config.template_dir, config.template_file_name)
+    main()

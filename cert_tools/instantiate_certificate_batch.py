@@ -1,19 +1,22 @@
+#!/usr/bin/env
+
 '''
 Merges a certificate template with recipients defined in a roster file. The result is
 unsigned certificates that can be given to cert-issuer.
 '''
+import copy
+import csv
+import hashlib
 import json
+import os
 import uuid
 from datetime import date
-import copy
+
+import bcrypt
+from cert_schema.schema_tools import schema_validator
 
 import config
 import helpers
-import os
-import hashlib
-from cert_schema.schema_tools import schema_validator
-import bcrypt
-import csv
 import jsonpath_helpers
 
 
@@ -35,14 +38,14 @@ class Recipient:
 def hash_and_salt_email_address(email, salt):
     return 'sha256$' + hashlib.sha256(email + salt).hexdigest()
 
-def instantiate_assertion(cert, uid, issued_on):
+def instantiate_assertion(config, cert, uid, issued_on):
     cert['assertion']['issuedOn'] = issued_on
     cert['assertion']['uid'] = uid
     cert['assertion']['id'] = helpers.urljoin_wrapper(config.issuer_certs_url, uid)
     return cert
 
 
-def instantiate_recipient(cert, recipient):
+def instantiate_recipient(config, cert, recipient):
     cert['recipient']['givenName'] = recipient.given_name
     cert['recipient']['familyName'] = recipient.family_name
     cert['recipient']['pubkey'] = recipient.pubkey
@@ -65,7 +68,11 @@ def instantiate_recipient(cert, recipient):
             raise Exception('there are fields in the csv file that are not expected by the additional_per_recipient_fields configuration')
 
 
-def create_unsigned_certificates_from_roster(roster, template, output_dir, issued_on=str(date.today())):
+def create_unsigned_certificates_from_roster(config):
+    roster = os.path.join(config.data_dir, config.roster)
+    template = os.path.join(config.data_dir, config.template_dir, config.template_file_name)
+    issued_on = str(date.today())
+    output_dir = os.path.join(config.data_dir, config.unsigned_certificates_dir)
 
     recipients = []
     with open(roster, "r") as theFile:
@@ -83,16 +90,21 @@ def create_unsigned_certificates_from_roster(roster, template, output_dir, issue
 
             cert = copy.deepcopy(template)
 
-            instantiate_assertion(cert, uid, issued_on)
-            instantiate_recipient(cert, recipient)
+            instantiate_assertion(config, cert, uid, issued_on)
+            instantiate_recipient(config, cert, recipient)
 
             # validate certificate before writing
-            schema_validator.validate_unsigned_v1_2_0(cert)
+            schema_validator.validate_unsigned_v1_2(cert)
 
             with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
 
+def main():
+    import config
+    conf = config.get_config()
+    create_unsigned_certificates_from_roster(conf)
+    print('Instantiated batch!')
+
 
 if __name__ == "__main__":
-    template_file = os.path.join(config.template_dir, config.template_file_name)
-    create_unsigned_certificates_from_roster(config.roster, template_file, config.unsigned_certificates_dir)
+    main()
