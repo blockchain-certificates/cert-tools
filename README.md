@@ -35,7 +35,10 @@ create-certificate-template -c conf.ini
 ```
 
 #### About
-create a certificate template based on config.py. You can specify additional global fields (fields that apply for every certificate in the batch) and additional per-recipient fields (fields that you will specify per-recipient).
+
+Creates a certificate template populated with the setting you provide in the conf.ini file. This will not contain recipient-specific data; such fields will be populated with merge tags.
+ 
+You can specify additional global fields (fields that apply for every certificate in the batch) and additional per-recipient fields (fields that you will specify per-recipient).
 
 additional_global_fields:  For each additional global field, you must indicate:
 
@@ -81,7 +84,9 @@ instantiate-certificate-batch -c conf.ini
 
 #### About
 
-This script takes the template generated in the previous step and csv file (configurable, by default in rosters) as input. It generates a certificate per recipient based on the values in the csv file.
+Populates the certificate template (created by the previous script) with recipient data from a csv file. It generates a certificate per recipient based on the values in the csv file.
+
+The csv file location is configurable via the conf.ini file.
 
 The csv file must always contain:
 
