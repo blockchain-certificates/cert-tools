@@ -141,8 +141,9 @@ def create_certificate_template(config):
     template_dir = config.template_dir
     template_file_name = config.template_file_name
 
+    # TODO: update context to perma-id after merge
     raw_json = {
-        '@context': 'https://w3id.org/blockcerts/context#',
+        '@context': 'http://www.blockcerts.org/schema/1.2/context.json',
         '@type': 'CertificateDocument',
         'recipient': recipient,
         'assertion': assertion,
