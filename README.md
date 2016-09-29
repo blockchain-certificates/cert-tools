@@ -47,13 +47,23 @@ additional_global_fields:  For each additional global field, you must indicate:
 
 Example:
 
+conf.ini version:
 ```
-    additional_global_fields = [
-        {
-            'path': '$.certificate.subtitle',
-            'value': 'kim custom subtitle',
-        }
-   ]
+additional_global_fields = {"fields": [{"path": "$.certificate.subtitle","value": "custom subtitle"}]}
+```
+
+above expanded for readability:
+```
+    additional_global_fields = {
+        "fields": 
+            [
+                {
+                    "path": "$.certificate.subtitle",
+                    "value": "custom subtitle"
+                }
+            ]
+    }
+
 ```
 
 additional_per_recipient_fields: Although these are per-recipient, we still use these for the template creation process. Except in this case, we apply merge tags as values. This is to allow additional tooling to replace instantiate_certificate_batch.py. For each additional per-recipient field, you must indicate:
@@ -64,14 +74,23 @@ additional_per_recipient_fields: Although these are per-recipient, we still use 
 
 Example:
 
+conf.ini version:
 ```
-    additional_per_recipient_fields = [
-        {
-            'path': '$.assertion.evidence',
-            'value': '*|EVIDENCE|*',
-            'csv_column': 'jobTitle'
-        }
-   ]
+    additional_per_recipient_fields = {"fields": [{"path": "$.assertion.evidence","value": "*|EVIDENCE|*","csv_column": "evidence"}]}
+```
+
+above expanded for readability:
+```
+    additional_per_recipient_fields = {
+        "fields": 
+            [
+                {
+                    "path": "$.assertion.evidence",
+                    "value": "*|EVIDENCE|*",
+                    "csv_column": "evidence"
+                }
+            ]
+    }
 ```
    
    
@@ -95,15 +114,12 @@ The csv file must always contain:
 - pubkey
 - identity
 
-It may also contain custom fields per-recipient. In create_certificate_template.py, we populated the template with merge tags for these fields. This script will now populate each recipient's certificate with the value in the corresponding csv file. So in this example, we'll get the value in the csv column 'jobTitle' to populate the 'evidence' field on the certificate's assertion section.
+It may also contain custom fields per-recipient. The create_certificate_template.py script populated the template with merge tags for these fields. This script will now populate each recipient's certificate with the value in the corresponding csv file. So in this example, we'll get the value in the csv column 'revkey' to populate the 'revocationKey' field on the certificate's recipient section.
 
-    additional_per_recipient_fields = [
-        {
-            'path': '$.assertion.evidence',
-            'value': '*|EVIDENCE|*',
-            'csv_column': 'evidence'
-        }
-   ]
+
+```
+additional_per_recipient_fields = {"fields": [{"path": "$.recipient.revocationKey","value": "*|REVKEY|*","csv_column": "revkey"}]}
+```
    
    
 ## Examples

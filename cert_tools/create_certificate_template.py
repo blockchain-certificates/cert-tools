@@ -73,20 +73,22 @@ def additional_global_fields(config, raw_json):
                         print('path is not valid! : %s', '.'.join(fields))
     return raw_json
 
-def create_certificate_section(config):
 
+def create_certificate_section(config):
     data_dir = config.data_dir
+    cert_image_path = helpers.normalize_data_path(data_dir, config.cert_image_file)
+    issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_logo_file)
     certificate = {
-        '@type': 'Certificate',
-        'title': config.certificate_title,
-        'image': helpers.encode_image(os.path.join(data_dir, config.cert_image_file)),
+        'type': 'Certificate',
+        'name': config.certificate_title,
+        'image': helpers.encode_image(cert_image_path),
         'description': config.certificate_description,
         'id': config.certificate_id,
         'language': config.certificate_language,
         'issuer': {
-            '@type': 'Issuer',
+            'type': 'Issuer',
             'url': config.issuer_url,
-            'image': helpers.encode_image(os.path.join(data_dir, config.issuer_logo_file)),
+            'image': helpers.encode_image(issuer_image_path),
             'email': config.issuer_email,
             'name': config.issuer_name,
             'id': config.issuer_id
@@ -98,7 +100,6 @@ def create_certificate_section(config):
 
 def create_verification_section(config):
     verify = {
-        '@type': 'VerificationObject',
         'signer': config.issuer_public_key_url,
         'attribute-signed': 'uid',
         'type': 'ECDSA(secp256k1)'
@@ -108,11 +109,10 @@ def create_verification_section(config):
 
 def create_recipient_section(config):
     recipient = {
-        '@type': 'Recipient',
         'type': 'email',
         'familyName': '*|LNAME|*',
         'givenName': '*|FNAME|*',
-        'pubkey': '*|PUBKEY|*',
+        'publicKey': '*|PUBKEY|*',
         'identity': '*|EMAIL|*',
         'hashed': config.hash_emails
     }
@@ -121,10 +121,11 @@ def create_recipient_section(config):
 
 def create_assertion_section(config):
     data_dir = config.data_dir
+    issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_signature_file)
     assertion = {
-        '@type': 'Assertion',
+        'type': 'Assertion',
         'issuedOn': '*|DATE|*',
-        'image:signature': helpers.encode_image(os.path.join(data_dir, config.issuer_signature_file)),
+        'image:signature': helpers.encode_image(issuer_image_path),
         'uid': '*|CERTUID|*',
         'id': helpers.urljoin_wrapper(config.issuer_certs_url, '*|CERTUID|*')
     }
@@ -141,10 +142,9 @@ def create_certificate_template(config):
     template_dir = config.template_dir
     template_file_name = config.template_file_name
 
-    # TODO: update context to perma-id after merge
     raw_json = {
-        '@context': 'http://www.blockcerts.org/schema/1.2/context.json',
-        '@type': 'CertificateDocument',
+        '@context': 'https://w3id.org/blockcerts/v1',
+        'type': 'CertificateDocument',
         'recipient': recipient,
         'assertion': assertion,
         'certificate': certificate,
@@ -152,23 +152,27 @@ def create_certificate_template(config):
     }
 
     if config.additional_global_fields:
-            for field in config.additional_global_fields:
-                raw_json = jsonpath_helpers.set_field(raw_json, field['path'], field['value'])
+        for field in config.additional_global_fields:
+            raw_json = jsonpath_helpers.set_field(raw_json, field['path'], field['value'])
 
     if config.additional_per_recipient_fields:
         for field in config.additional_per_recipient_fields:
             raw_json = jsonpath_helpers.set_field(raw_json, field['path'], field['value'])
 
-    with open(os.path.join(data_dir, template_dir, template_file_name), 'w') as cert_template:
+    template_path = helpers.normalize_data_path(data_dir, template_dir, template_file_name)
+
+    with open(template_path, 'w') as cert_template:
         json.dump(raw_json, cert_template)
 
     return raw_json
+
 
 def main():
     import config
     conf = config.get_config()
     template = create_certificate_template(conf)
     print('Created template!')
+
 
 if __name__ == "__main__":
     main()

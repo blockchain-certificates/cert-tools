@@ -1,4 +1,5 @@
 import base64
+import os
 import sys
 
 
@@ -7,6 +8,8 @@ if sys.version > '3':
 else:
     from urlparse import urljoin
 
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.join(__file__, os.pardir), os.pardir))
 png_prefix = 'data:image/png;base64,'
 
 
@@ -19,3 +22,9 @@ def encode_image(filename):
 
 def urljoin_wrapper(part1, part2):
     return urljoin(part1, part2)
+
+
+def normalize_data_path(*argv):
+    if os.path.isabs(argv[0]):
+        return os.path.join(*argv)
+    return os.path.join(PROJECT_ROOT, *argv)

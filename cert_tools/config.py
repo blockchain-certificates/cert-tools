@@ -1,8 +1,16 @@
 import configargparse
-
+import json
 import os
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+def make_action(additional_arg):
+    class customAction(configargparse.Action):
+        def __call__(self, parser, args, values, option_string=None):
+            print(additional_arg)
+            json_obj = json.loads(values)['fields']
+            setattr(args, self.dest, json_obj)
+    return customAction
 
 
 def create_config():
@@ -29,8 +37,8 @@ def create_config():
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--hash_emails', action='store_true',
                    help='whether to hash emails in the certificate')
-    p.add_argument('--additional_global_fields', type=list, action='append', help='additional global fields')
-    p.add_argument('--additional_per_recipient_fields', type=list, action='append', help='additional per-recipient fields')
+    p.add_argument('--additional_global_fields', action=make_action('per_recipient_fields'), help='additional global fields')
+    p.add_argument('--additional_per_recipient_fields', action=make_action('per_recipient_fields'), help='additional per-recipient fields')
 
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')

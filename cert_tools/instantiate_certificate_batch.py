@@ -48,7 +48,7 @@ def instantiate_assertion(config, cert, uid, issued_on):
 def instantiate_recipient(config, cert, recipient):
     cert['recipient']['givenName'] = recipient.given_name
     cert['recipient']['familyName'] = recipient.family_name
-    cert['recipient']['pubkey'] = recipient.pubkey
+    cert['recipient']['publicKey'] = recipient.pubkey
     if config.hash_emails:
         # this is probably overkill, but if I'm generating a salt...
         salt = bcrypt.gensalt()
@@ -69,10 +69,10 @@ def instantiate_recipient(config, cert, recipient):
 
 
 def create_unsigned_certificates_from_roster(config):
-    roster = os.path.join(config.data_dir, config.roster)
-    template = os.path.join(config.data_dir, config.template_dir, config.template_file_name)
+    roster = helpers.normalize_data_path(config.data_dir, config.roster)
+    template = helpers.normalize_data_path(config.data_dir, config.template_dir, config.template_file_name)
     issued_on = str(date.today())
-    output_dir = os.path.join(config.data_dir, config.unsigned_certificates_dir)
+    output_dir = helpers.normalize_data_path(config.data_dir, config.unsigned_certificates_dir)
 
     recipients = []
     with open(roster, "r") as theFile:
@@ -96,7 +96,7 @@ def create_unsigned_certificates_from_roster(config):
             # validate certificate before writing
             schema_validator.validate_unsigned_v1_2(cert)
 
-            with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
+            with open(helpers.normalize_data_path(output_dir, uid + '.json'), 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
 
 def main():
