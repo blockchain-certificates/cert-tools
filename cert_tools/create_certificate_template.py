@@ -83,7 +83,6 @@ def create_certificate_section(config):
         'name': config.certificate_title,
         'image': helpers.encode_image(cert_image_path),
         'description': config.certificate_description,
-        'id': config.certificate_id,
         'language': config.certificate_language,
         'issuer': {
             'type': 'Issuer',
@@ -100,7 +99,6 @@ def create_certificate_section(config):
 
 def create_verification_section(config):
     verify = {
-        'signer': config.issuer_public_key_url,
         'attribute-signed': 'uid',
         'type': 'ECDSA(secp256k1)'
     }
