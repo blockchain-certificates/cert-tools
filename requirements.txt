@@ -1,5 +1,5 @@
 pymongo>=3.0
-cert-schema>=1.2.19
+cert-schema>=1.2.20
 bcrypt>=3.1.0
 jsonpath-rw>=1.4.0
 configargparse==0.10.0
