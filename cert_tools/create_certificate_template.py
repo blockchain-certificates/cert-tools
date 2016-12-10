@@ -75,9 +75,7 @@ def additional_global_fields(config, raw_json):
 
 
 def create_certificate_section(config):
-    data_dir = config.data_dir
-    if not os.path.isabs(data_dir):
-        data_dir = os.path.join(os.getcwd(), data_dir)
+    data_dir = os.path.abspath(config.data_dir)
     cert_image_path = helpers.normalize_data_path(data_dir, config.cert_image_file)
     issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_logo_file)
     certificate = {
@@ -120,9 +118,7 @@ def create_recipient_section(config):
 
 
 def create_assertion_section(config):
-    data_dir = config.data_dir
-    if not os.path.isabs(data_dir):
-        data_dir = os.path.join(os.getcwd(), data_dir)
+    data_dir = os.path.abspath(config.data_dir)
     issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_signature_file)
     assertion = {
         'type': 'Assertion',
@@ -140,9 +136,7 @@ def create_certificate_template(config):
     assertion = create_assertion_section(config)
     recipient = create_recipient_section(config)
 
-    data_dir = config.data_dir
-    if not os.path.isabs(data_dir):
-        data_dir = os.path.join(os.getcwd(), data_dir)
+    data_dir = os.path.abspath(config.data_dir)
     template_dir = config.template_dir
     if not os.path.isabs(template_dir):
         template_dir = os.path.join(data_dir, template_dir)
