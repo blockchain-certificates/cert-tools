@@ -29,5 +29,6 @@ setup(
         'console_scripts': [
             'create-certificate-template = cert_tools.create_certificate_template:main',
             'instantiate-certificate-batch = cert_tools.instantiate_certificate_batch:main',
+            'create-revocation-addresses = cert_tools.create_revocation_addresses:main'
         ]}
 )

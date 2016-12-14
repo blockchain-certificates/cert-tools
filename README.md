@@ -121,7 +121,31 @@ It may also contain custom fields per-recipient. The create_certificate_template
 additional_per_recipient_fields = {"fields": [{"path": "$.recipient.revocationKey","value": "*|REVKEY|*","csv_column": "revkey"}]}
 ```
    
+### create_revocation_addresses.py
    
+#### Run (optional)
+```
+create-revocation-addresses -k tpubD6NzV...H66KUZEBkf
+```
+
+#### About
+
+Generates Bitcoin addresses using an HD extended public (or private) key to be used as the issuer's revocation addresses for the certificates. This would be useful only if the issuer requires to be able to revoke specific certificates later on. It creates a list of addresses that could then be easily merged with the roster file, e.g. using unix's paste command.
+
+To create 20 revocation address for a testnet extended public key for the first batch of 2016 certificates run:
+
+```
+echo "revkey" > rev_addresses.txt
+
+create-revocation-addresses -n 20 -p "2016/1" -k tpubD6NzV...H66KUZEBkf >> rev_addresses.txt
+```
+
+To merge to roster (in unix) run:
+
+```
+paste roster.txt rev_addresses.txt
+```
+
 ## Example
 
 See sample_data for example configuration and output. `conf-mainnet.ini` was used to create a batch of 2 unsigned certificates on the Bitcoin blockchain. 
