@@ -143,7 +143,7 @@ create-revocation-addresses -n 20 -p "2016/1" -k tpubD6NzV...H66KUZEBkf >> rev_a
 To merge to roster (in unix) run:
 
 ```
-paste roster.txt rev_addresses.txt
+paste -d , roster.txt rev_addresses.txt > roster_with_rev.txt
 ```
 
 ## Example
