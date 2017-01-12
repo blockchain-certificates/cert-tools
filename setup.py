@@ -14,7 +14,7 @@ with open(os.path.join(here, 'README.md')) as fp:
 
 setup(
     name='cert-tools',
-    version='1.2.0',
+    version='1.2.1',
     description='creates blockchain certificates',
     author='MIT Media Lab Blockchain Certificates',
     tests_require=['tox'],

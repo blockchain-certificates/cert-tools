@@ -101,3 +101,4 @@ data/signed_certificates/*.json
 data/transaction_ids/*.txt
 data/receipts/*.json
 
+.DS_Store
