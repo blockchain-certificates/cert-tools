@@ -120,13 +120,16 @@ def create_recipient_section(config):
 def create_assertion_section(config):
     data_dir = os.path.abspath(config.data_dir)
     issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_signature_file)
+
     assertion = {
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
-        'image:signature': helpers.encode_image(issuer_image_path),
         'uid': '*|CERTUID|*',
         'id': helpers.urljoin_wrapper(config.issuer_certs_url, '*|CERTUID|*')
     }
+    if config.issuer_signature_file:
+        issuer_image_path = helpers.normalize_data_path(data_dir, config.issuer_signature_file)
+        assertion['image:signature'] = helpers.encode_image(issuer_image_path)
     return assertion
 
 
