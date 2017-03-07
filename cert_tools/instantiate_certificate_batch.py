@@ -12,12 +12,30 @@ import os
 import uuid
 from datetime import date
 
-import bcrypt
 from cert_schema.schema_tools import schema_validator
 
-import config
 import helpers
 import jsonpath_helpers
+
+BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+def encode(num, alphabet=BASE62):
+    """Encode a positive number in Base X
+
+    Arguments:
+    - `num`: The number to encode
+    - `alphabet`: The alphabet to use for encoding
+    """
+    if num == 0:
+        return alphabet[0]
+    arr = []
+    base = len(alphabet)
+    while num:
+        num, rem = divmod(num, base)
+        arr.append(alphabet[rem])
+    arr.reverse()
+    return ''.join(arr)
 
 
 class Recipient:
@@ -38,6 +56,7 @@ class Recipient:
 def hash_and_salt_email_address(email, salt):
     return 'sha256$' + hashlib.sha256(email + salt).hexdigest()
 
+
 def instantiate_assertion(config, cert, uid, issued_on):
     cert['assertion']['issuedOn'] = issued_on
     cert['assertion']['uid'] = uid
@@ -50,8 +69,7 @@ def instantiate_recipient(config, cert, recipient):
     cert['recipient']['familyName'] = recipient.family_name
     cert['recipient']['publicKey'] = recipient.pubkey
     if config.hash_emails:
-        # this is probably overkill, but if I'm generating a salt...
-        salt = bcrypt.gensalt()
+        salt = encode(os.urandom(16))
         cert['recipient']['salt'] = salt
         cert['recipient']['identity'] = hash_and_salt_email_address(recipient.identity, salt)
     else:
@@ -65,7 +83,8 @@ def instantiate_recipient(config, cert, recipient):
     else:
         if recipient.additional_fields:
             # throw an exception on this in case it's a user error. We may decide to remove this if it's a nuisance
-            raise Exception('there are fields in the csv file that are not expected by the additional_per_recipient_fields configuration')
+            raise Exception(
+                'there are fields in the csv file that are not expected by the additional_per_recipient_fields configuration')
 
 
 def create_unsigned_certificates_from_roster(config):
@@ -98,6 +117,7 @@ def create_unsigned_certificates_from_roster(config):
 
             with open(helpers.normalize_data_path(output_dir, uid + '.json'), 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
+
 
 def main():
     import config
