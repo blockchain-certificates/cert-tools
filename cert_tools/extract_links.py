@@ -1,4 +1,4 @@
-#!/env/bin/python
+#!/usr/bin/env python
 
 import os
 import json

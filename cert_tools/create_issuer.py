@@ -1,5 +1,4 @@
-
-#!/usr/bin/env
+#!/usr/bin/env python
 '''
 Generates the issuer file (.json) thar represents the issues which is needed for issuing and validating certificates.
 

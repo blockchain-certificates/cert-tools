@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 
 '''
 Merges a certificate template with recipients defined in a roster file. The result is
@@ -12,30 +12,12 @@ import os
 import uuid
 from datetime import date
 
+import configargparse
+
 from cert_schema.schema_tools import schema_validator
 
 import helpers
 import jsonpath_helpers
-
-BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-
-def encode(num, alphabet=BASE62):
-    """Encode a positive number in Base X
-
-    Arguments:
-    - `num`: The number to encode
-    - `alphabet`: The alphabet to use for encoding
-    """
-    if num == 0:
-        return alphabet[0]
-    arr = []
-    base = len(alphabet)
-    while num:
-        num, rem = divmod(num, base)
-        arr.append(alphabet[rem])
-    arr.reverse()
-    return ''.join(arr)
 
 
 class Recipient:
@@ -69,7 +51,7 @@ def instantiate_recipient(config, cert, recipient):
     cert['recipient']['familyName'] = recipient.family_name
     cert['recipient']['publicKey'] = recipient.pubkey
     if config.hash_emails:
-        salt = encode(os.urandom(16))
+        salt = helpers.encode(os.urandom(16))
         cert['recipient']['salt'] = salt
         cert['recipient']['identity'] = hash_and_salt_email_address(recipient.identity, salt)
     else:
@@ -88,13 +70,13 @@ def instantiate_recipient(config, cert, recipient):
 
 
 def create_unsigned_certificates_from_roster(config):
-    roster = helpers.normalize_data_path(config.data_dir, config.roster)
-    template = helpers.normalize_data_path(config.data_dir, config.template_dir, config.template_file_name)
+    roster = os.path.join(config.abs_data_dir, config.roster)
+    template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
     issued_on = str(date.today())
-    output_dir = helpers.normalize_data_path(config.data_dir, config.unsigned_certificates_dir)
+    output_dir = os.path.join(config.abs_data_dir, config.unsigned_certificates_dir)
 
     recipients = []
-    with open(roster, "r") as theFile:
+    with open(roster, 'r') as theFile:
         reader = csv.DictReader(theFile)
         for line in reader:
             r = Recipient(line)
@@ -115,13 +97,31 @@ def create_unsigned_certificates_from_roster(config):
             # validate certificate before writing
             schema_validator.validate_unsigned_v1_2(cert)
 
-            with open(helpers.normalize_data_path(output_dir, uid + '.json'), 'w') as unsigned_cert:
+            with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
 
 
+def get_config():
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf.ini')])
+    p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
+    p.add_argument('--data_dir', type=str, help='where data files are located')
+    p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
+    p.add_argument('--template_dir', type=str, help='the template output directory')
+    p.add_argument('--template_file_name', type=str, help='the template file name')
+    p.add_argument('--hash_emails', action='store_true',
+                   help='whether to hash emails in the certificate')
+    p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'), help='additional per-recipient fields')
+    p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
+    p.add_argument('--roster', type=str, help='roster file name')
+    args, _ = p.parse_known_args()
+    args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
+
+    return args
+
+
 def main():
-    import config
-    conf = config.get_config()
+    conf = get_config()
     create_unsigned_certificates_from_roster(conf)
     print('Instantiated batch!')
 
