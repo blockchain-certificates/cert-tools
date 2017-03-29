@@ -91,8 +91,7 @@ def create_assertion_section(config):
         ],
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
-        'uid': '*|CERTUID|*',
-        'id': helpers.urljoin_wrapper(config.issuer_certs_url, '*|CERTUID|*')
+        'id': 'urn:uuid:*|CERTUID|*'
     }
     return assertion
 

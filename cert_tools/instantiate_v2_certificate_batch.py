@@ -39,8 +39,7 @@ def hash_and_salt_email_address(email, salt):
 
 def instantiate_assertion(config, cert, uid, issued_on):
     cert['issuedOn'] = issued_on
-    cert['uid'] = uid
-    cert['id'] = helpers.urljoin_wrapper(config.issuer_certs_url, uid)
+    cert['id'] = 'urn:uuid:' + uid
     return cert
 
 
