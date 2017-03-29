@@ -43,7 +43,6 @@ def create_badge_section(config):
         for signature_line in config.issuer_signature_lines:
             signature_lines.append(
                 {
-                    '@context': config.blockcerts_v2_obi_ext_context,
                     'type': [
                         'SignatureLine',
                         'Extension'
@@ -53,15 +52,14 @@ def create_badge_section(config):
                     'name': signature_line['name']
                 }
             )
-        badge[config.blockcerts_v2_obi_ext_alias + ':signatureLines'] = signature_lines
+        badge[config.blockcerts_v2_alias + ':signatureLines'] = signature_lines
 
     return badge
 
 
 def create_verification_section(config):
     verification = {
-        'context': config.blockcerts_v2_context,
-        'type': ['AnchoredBlockchainVerification', 'Extension'],
+        'type': ['BlockchainVerification', 'Extension'],
         'creator': config.creator
 
     }
@@ -73,11 +71,10 @@ def create_recipient_section(config):
         'type': 'email',
         'identity': '*|EMAIL|*',
         'hashed': config.hash_emails,
-        config.blockcerts_v2_obi_ext_alias + ':recipientProfile': {
-            '@context': config.blockcerts_v2_obi_ext_context,
+        config.blockcerts_v2_alias + ':recipientProfile': {
             'type': ['RecipientProfile', 'Extension'],
             'name': '*|NAME|*',
-            'id': 'ecdsa-koblitz-pubkey:*|PUBKEY|*'
+            'publicKey': 'ecdsa-koblitz-pubkey:*|PUBKEY|*'
         }
     }
     return recipient
@@ -87,8 +84,9 @@ def create_assertion_section(config):
     assertion = {
         '@context': [
             config.obi_v2_context,
+            config.blockcerts_v2_context,
             {
-                config.blockcerts_v2_obi_ext_alias: config.blockcerts_v2_obi_ext_prefix + '#'
+                config.blockcerts_v2_alias: config.blockcerts_v2_prefix + '#'
             }
         ],
         'type': 'Assertion',
@@ -157,10 +155,9 @@ def get_config():
     p.add_argument('--issuer_public_key', type=str, help='issuer public key')
     p.add_argument('--badge_id', type=str, help='badge id')
     p.add_argument('--blockcerts_v2_context', type=str, help='blockcerts v2 context')
-    p.add_argument('--blockcerts_v2_obi_ext_context', type=str, help='blockcerts v2 OBI ext context')
     p.add_argument('--obi_v2_context', type=str, help='OBI v2 context')
-    p.add_argument('--blockcerts_v2_obi_ext_prefix', type=str, help='blockcerts v2 OBI ext prefix')
-    p.add_argument('--blockcerts_v2_obi_ext_alias', type=str, help='blockcerts v2 OBI ext alias')
+    p.add_argument('--blockcerts_v2_prefix', type=str, help='blockcerts v2 prefix')
+    p.add_argument('--blockcerts_v2_alias', type=str, help='blockcerts v2 alias')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
                    help='issuer signature lines')
     p.add_argument('--creator', type=str, help='creator')

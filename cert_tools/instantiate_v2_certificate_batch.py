@@ -55,13 +55,12 @@ def instantiate_recipient(config, cert, recipient):
         cert['recipient']['identity'] = recipient.identity
         cert['recipient']['hashed'] = False
 
-    profile_field = config.blockcerts_v2_obi_ext_alias + ':recipientProfile'
+    profile_field = config.blockcerts_v2_alias + ':recipientProfile'
 
     cert['recipient'][profile_field] = {}
-    cert['recipient'][profile_field]['@context'] = config.blockcerts_v2_obi_ext_context
     cert['recipient'][profile_field]['type'] = ['RecipientProfile', 'Extension']
     cert['recipient'][profile_field]['name'] = recipient.name
-    cert['recipient'][profile_field]['id'] = 'ecdsa-koblitz-pubkey:' + recipient.pubkey
+    cert['recipient'][profile_field]['publicKey'] = 'ecdsa-koblitz-pubkey:' + recipient.pubkey
 
     if config.additional_per_recipient_fields:
         if not recipient.additional_fields:
@@ -120,8 +119,7 @@ def get_config():
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'), help='additional per-recipient fields')
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')
-    p.add_argument('--blockcerts_v2_obi_ext_alias', type=str, help='blockcerts v2 OBI ext alias')
-    p.add_argument('--blockcerts_v2_obi_ext_context', type=str, help='blockcerts v2 OBI ext context')
+    p.add_argument('--blockcerts_v2_alias', type=str, help='blockcerts v2 alias')
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
 
