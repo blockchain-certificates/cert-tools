@@ -38,9 +38,9 @@ def create_badge_section(config):
         badge['criteria']['narrative'] = config.criteria_narrative
 
     if config.issuer_signature_lines:
-        # TODO -- parse
         signature_lines = []
         for signature_line in config.issuer_signature_lines:
+            signature_image_path = os.path.join(config.abs_data_dir, signature_line['signature_image'])
             signature_lines.append(
                 {
                     'type': [
@@ -48,7 +48,7 @@ def create_badge_section(config):
                         'Extension'
                     ],
                     'jobTitle': signature_line['job_title'],
-                    'image': signature_line['signature_image'],
+                    'image': helpers.encode_image(signature_image_path),
                     'name': signature_line['name']
                 }
             )
@@ -135,7 +135,6 @@ def get_config():
 
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--issuer_logo_file', type=str, help='issuer logo image file, png format')
-    p.add_argument('--issuer_signature_file', type=str, help='issuer signature image file, png format')
     p.add_argument('--cert_image_file', type=str, help='issuer logo image file, png format')
     p.add_argument('--issuer_url', type=str, help='issuer URL')
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
