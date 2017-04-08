@@ -101,4 +101,8 @@ data/signed_certificates/*.json
 data/transaction_ids/*.txt
 data/receipts/*.json
 
+lm_data/*
+lm_conf.ini
+sample_data/*
+
 .DS_Store
