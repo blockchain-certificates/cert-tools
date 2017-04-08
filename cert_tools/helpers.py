@@ -13,6 +13,7 @@ else:
 BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.join(__file__, os.pardir), os.pardir))
 png_prefix = 'data:image/png;base64,'
+URN_UUID_PREFIX = 'urn:uuid:'
 
 
 def make_action(additional_arg):

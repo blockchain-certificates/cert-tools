@@ -14,6 +14,7 @@ from datetime import date
 
 import configargparse
 
+from cert_core.model import scope_name
 from cert_schema.schema_tools import schema_validator
 
 import helpers
@@ -39,7 +40,7 @@ def hash_and_salt_email_address(email, salt):
 
 def instantiate_assertion(config, cert, uid, issued_on):
     cert['issuedOn'] = issued_on
-    cert['id'] = 'urn:uuid:' + uid
+    cert['id'] = helpers.URN_UUID_PREFIX + uid
     return cert
 
 
@@ -54,7 +55,7 @@ def instantiate_recipient(config, cert, recipient):
         cert['recipient']['identity'] = recipient.identity
         cert['recipient']['hashed'] = False
 
-    profile_field = config.blockcerts_v2_alias + ':recipientProfile'
+    profile_field = scope_name('recipientProfile')
 
     cert['recipient'][profile_field] = {}
     cert['recipient'][profile_field]['type'] = ['RecipientProfile', 'Extension']

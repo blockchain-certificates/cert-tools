@@ -5,11 +5,14 @@ Creates a certificate template with merge tags for recipient/assertion-specific 
 '''
 import json
 import os
+import uuid
 
 import configargparse
 
 import helpers
 import jsonpath_helpers
+
+from cert_core.model import scope_name
 
 
 def create_badge_section(config):
@@ -17,7 +20,7 @@ def create_badge_section(config):
     issuer_image_path = os.path.join(config.abs_data_dir, config.issuer_logo_file)
     badge = {
         'type': 'BadgeClass',
-        'id': config.badge_id,
+        'id': helpers.URN_UUID_PREFIX + config.badge_id,
         'name': config.certificate_title,
         'description': config.certificate_description,
         'image': helpers.encode_image(cert_image_path),
@@ -52,7 +55,7 @@ def create_badge_section(config):
                     'name': signature_line['name']
                 }
             )
-        badge[config.blockcerts_v2_alias + ':signatureLines'] = signature_lines
+        badge[scope_name('signatureLines')] = signature_lines
 
     return badge
 
@@ -71,7 +74,7 @@ def create_recipient_section(config):
         'type': 'email',
         'identity': '*|EMAIL|*',
         'hashed': config.hash_emails,
-        config.blockcerts_v2_alias + ':recipientProfile': {
+        scope_name('recipientProfile'): {
             'type': ['RecipientProfile', 'Extension'],
             'name': '*|NAME|*',
             'publicKey': 'ecdsa-koblitz-pubkey:*|PUBKEY|*'
@@ -91,12 +94,18 @@ def create_assertion_section(config):
         ],
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
-        'id': 'urn:uuid:*|CERTUID|*'
+        'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*'
     }
     return assertion
 
 
 def create_certificate_template(config):
+
+    if not config.badge_id:
+        badge_uuid = str(uuid.uuid4())
+        print('Generated badge id {0}'.format(badge_uuid))
+        config.badge_id = badge_uuid
+
     badge = create_badge_section(config)
     verification = create_verification_section(config)
     assertion = create_assertion_section(config)
