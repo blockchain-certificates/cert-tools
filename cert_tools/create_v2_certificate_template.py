@@ -32,7 +32,7 @@ def create_badge_section(config):
             'email': config.issuer_email,
             'image': helpers.encode_image(issuer_image_path),
             'revocationList': config.revocation_list,
-            'publicKey': config.issuer_public_key
+            'publicKey': config.creator
         }
     }
 
@@ -149,7 +149,8 @@ def get_config():
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
     p.add_argument('--issuer_email', type=str, help='issuer email')
     p.add_argument('--issuer_name', type=str, help='issuer name')
-    p.add_argument('--issuer_id', type=str, help='path to issuer public keys')
+    p.add_argument('--issuer_id', type=str, help='issuer profile')
+    p.add_argument('--issuer_key', type=str, help='issuer issuing key')
     p.add_argument('--certificate_description', type=str, help='the display description of the certificate')
     p.add_argument('--certificate_title', type=str, help='the title of the certificate')
     p.add_argument('--criteria_narrative', type=str, help='criteria narrative')
