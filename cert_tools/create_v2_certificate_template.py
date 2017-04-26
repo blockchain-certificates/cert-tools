@@ -62,7 +62,7 @@ def create_badge_section(config):
 
 def create_verification_section(config):
     verification = {
-        'type': ['BlockchainVerification', 'Extension'],
+        'type': ['MerkleProofVerification2017', 'Extension'],
         'creator': config.creator
 
     }

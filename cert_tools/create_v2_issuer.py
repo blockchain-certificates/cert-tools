@@ -33,7 +33,7 @@ def generate_issuer_file(config):
         'name': config.issuer_name,
         'email': config.issuer_email,
         'image': helpers.encode_image(config.issuer_logo_file),
-        'publicKey': config.public_key,
+        'publicKeys': [{'publicKey': config.public_key}],
         'revocationList': config.revocation_list_uri,
         'type': ISSUER_TYPE
     }
