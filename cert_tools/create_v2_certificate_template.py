@@ -86,8 +86,8 @@ def create_recipient_section(config):
 def create_assertion_section(config):
     assertion = {
         '@context': [
-            config.blockcerts_v2_context,
-            config.obi_v2_context
+            config.obi_v2_context,
+            config.blockcerts_v2_context
         ],
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
