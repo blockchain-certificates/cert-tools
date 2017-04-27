@@ -21,10 +21,7 @@ BLOCKCERTS_V2_CONTEXT_JSON = 'https://www.blockcerts.org/blockcerts_v2_alpha/con
 def generate_issuer_file(config):
     output_handle = open(config.output_file, 'w') if config.output_file else sys.stdout
 
-    if config.intro_url:
-        context = [OPEN_BADGES_V2_CONTEXT_JSON, BLOCKCERTS_V2_CONTEXT_JSON]
-    else:
-        context = OPEN_BADGES_V2_CONTEXT_JSON
+    context = [BLOCKCERTS_V2_CONTEXT_JSON, OPEN_BADGES_V2_CONTEXT_JSON]
 
     issuer_json = {
         '@context': context,
