@@ -4,7 +4,7 @@ import uuid
 from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
-from cert_core import __version__
+from cert_tools import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 
