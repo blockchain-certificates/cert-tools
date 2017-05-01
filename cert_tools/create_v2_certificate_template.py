@@ -31,8 +31,7 @@ def create_badge_section(config):
             'url': config.issuer_url,
             'email': config.issuer_email,
             'image': helpers.encode_image(issuer_image_path),
-            'revocationList': config.revocation_list,
-            'publicKey': config.creator
+            'revocationList': config.revocation_list
         }
     }
 
@@ -63,7 +62,7 @@ def create_badge_section(config):
 def create_verification_section(config):
     verification = {
         'type': ['MerkleProofVerification2017', 'Extension'],
-        'creator': config.creator
+        'creator': config.issuer_public_key
 
     }
     return verification
@@ -161,11 +160,8 @@ def get_config():
     p.add_argument('--badge_id', type=str, help='badge id')
     p.add_argument('--blockcerts_v2_context', type=str, help='blockcerts v2 context')
     p.add_argument('--obi_v2_context', type=str, help='OBI v2 context')
-    p.add_argument('--blockcerts_v2_prefix', type=str, help='blockcerts v2 prefix')
-    p.add_argument('--blockcerts_v2_alias', type=str, help='blockcerts v2 alias')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
                    help='issuer signature lines')
-    p.add_argument('--creator', type=str, help='creator')
 
     p.add_argument('--additional_global_fields', action=helpers.make_action('global_fields'),
                    help='additional global fields')
