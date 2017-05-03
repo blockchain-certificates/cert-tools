@@ -15,7 +15,7 @@ import helpers
 ISSUER_TYPE = 'Profile'
 
 OPEN_BADGES_V2_CONTEXT_JSON = 'https://openbadgespec.org/v2/context.json'
-BLOCKCERTS_V2_CONTEXT_JSON = 'https://www.blockcerts.org/blockcerts_v2_alpha/context_bc.json'
+BLOCKCERTS_V2_CONTEXT_JSON = 'https://w3id.org/blockcerts/schema/2.0-alpha/context.json'
 
 
 def generate_issuer_file(config):

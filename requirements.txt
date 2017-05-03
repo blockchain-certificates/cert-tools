@@ -1,7 +1,7 @@
 pymongo>=3.0
-cert-schema==2.0b7
+cert-schema==2.0b11
 jsonpath-rw>=1.4.0
 configargparse==0.10.0
 tox==2.3.1
 pycoin==0.70
-cert-core>=2.0b3
+cert-core==2.0b6
