@@ -1,3 +1,3 @@
-familyName,givenName,pubkey,identity
-Stark,Arya,1AAGG6jirbu9XwikFpkHokbbiYpjVtFe1G,aryaxyz@starkxyz.com
-Targaryen,Daenerys,18AaFyeWmsasbSh2GsjGTtrNHqiJgsN6nB,daenerysxyz@targaryenxyz.com
+name,pubkey,identity
+Arya Stark,mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc,aryaxyz@starkxyz.com
+Daenerys Targaryen,mkwntSiQmc14H65YxwckLenxY3DsEpvFbe,daenerysxyz@targaryenxyz.com

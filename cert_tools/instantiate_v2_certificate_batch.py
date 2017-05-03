@@ -119,7 +119,6 @@ def get_config():
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'), help='additional per-recipient fields')
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')
-    p.add_argument('--blockcerts_v2_alias', type=str, help='blockcerts v2 alias')
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
 

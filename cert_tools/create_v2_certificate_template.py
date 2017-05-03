@@ -31,8 +31,7 @@ def create_badge_section(config):
             'url': config.issuer_url,
             'email': config.issuer_email,
             'image': helpers.encode_image(issuer_image_path),
-            'revocationList': config.revocation_list,
-            'publicKey': config.issuer_public_key
+            'revocationList': config.revocation_list
         }
     }
 
@@ -62,8 +61,8 @@ def create_badge_section(config):
 
 def create_verification_section(config):
     verification = {
-        'type': ['BlockchainVerification', 'Extension'],
-        'creator': config.creator
+        'type': ['MerkleProofVerification2017', 'Extension'],
+        'creator': config.issuer_public_key
 
     }
     return verification
@@ -87,10 +86,7 @@ def create_assertion_section(config):
     assertion = {
         '@context': [
             config.obi_v2_context,
-            config.blockcerts_v2_context,
-            {
-                config.blockcerts_v2_alias: config.blockcerts_v2_prefix + '#'
-            }
+            config.blockcerts_v2_context
         ],
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
@@ -149,7 +145,8 @@ def get_config():
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
     p.add_argument('--issuer_email', type=str, help='issuer email')
     p.add_argument('--issuer_name', type=str, help='issuer name')
-    p.add_argument('--issuer_id', type=str, help='path to issuer public keys')
+    p.add_argument('--issuer_id', type=str, help='issuer profile')
+    p.add_argument('--issuer_key', type=str, help='issuer issuing key')
     p.add_argument('--certificate_description', type=str, help='the display description of the certificate')
     p.add_argument('--certificate_title', type=str, help='the title of the certificate')
     p.add_argument('--criteria_narrative', type=str, help='criteria narrative')
@@ -163,11 +160,8 @@ def get_config():
     p.add_argument('--badge_id', type=str, help='badge id')
     p.add_argument('--blockcerts_v2_context', type=str, help='blockcerts v2 context')
     p.add_argument('--obi_v2_context', type=str, help='OBI v2 context')
-    p.add_argument('--blockcerts_v2_prefix', type=str, help='blockcerts v2 prefix')
-    p.add_argument('--blockcerts_v2_alias', type=str, help='blockcerts v2 alias')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
                    help='issuer signature lines')
-    p.add_argument('--creator', type=str, help='creator')
 
     p.add_argument('--additional_global_fields', action=helpers.make_action('global_fields'),
                    help='additional global fields')

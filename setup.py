@@ -4,6 +4,8 @@ import uuid
 from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
+from cert_tools import __version__
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 install_reqs = parse_requirements(os.path.join(here, 'requirements.txt'), session=uuid.uuid1())
@@ -14,9 +16,9 @@ with open(os.path.join(here, 'README.md')) as fp:
 
 setup(
     name='cert-tools',
-    version='1.2.2',
+    version=__version__,
     description='creates blockchain certificates',
-    author='MIT Media Lab Blockchain Certificates',
+    author='Blockcerts',
     tests_require=['tox'],
     url='https://github.com/blockchain-certificates/cert-tools',
     license='MIT',
