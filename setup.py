@@ -29,9 +29,8 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'create-certificate-template = cert_tools.create_v1_2_certificate_template:main',
-            'instantiate-certificate-batch = cert_tools.instantiate_v1_2_certificate_batch:main',
-            'create-revocation-addresses = cert_tools.create_revocation_addresses:main',
-            'create-issuer = cert_tools.create_issuer:main'
+            'create-certificate-template = cert_tools.create_v2_certificate_template:main',
+            'instantiate-certificate-batch = cert_tools.instantiate_v2_certificate_batch:main',
+            'create-issuer = cert_tools.create_v2_issuer:main'
         ]}
 )

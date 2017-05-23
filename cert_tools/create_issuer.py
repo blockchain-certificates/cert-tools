@@ -6,9 +6,10 @@ Currently, just not check for inputs' validity (e.g. valid address, URLs, etc.)
 '''
 import os
 import sys
-import configargparse
 import json
 import datetime
+
+import configargparse
 
 import helpers
 
