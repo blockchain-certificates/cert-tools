@@ -165,13 +165,11 @@ def get_config():
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--hash_emails', action='store_true',
                    help='whether to hash emails in the certificate')
-
     p.add_argument('--revocation_list', type=str, help='issuer revocation list')
     p.add_argument('--issuer_public_key', type=str, help='issuer public key')
     p.add_argument('--badge_id', required=True, type=str, help='badge id')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
                    help='issuer signature lines')
-
     p.add_argument('--additional_global_fields', action=helpers.make_action('global_fields'),
                    help='additional global fields')
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'),
