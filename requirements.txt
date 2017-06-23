@@ -1,5 +1,5 @@
-cert-schema==2.0b18
-configargparse>=0.10.0
+cert-schema==2.0b19
+configargparse>=0.12.0
 jsonpath-rw>=1.4.0
 pycoin>=0.77
 tox>=2.7.0
