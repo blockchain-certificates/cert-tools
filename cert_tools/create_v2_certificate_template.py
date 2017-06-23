@@ -12,7 +12,11 @@ import configargparse
 import helpers
 import jsonpath_helpers
 
-from cert_core.model import scope_name
+from cert_schema import *
+from cert_schema.model import scope_name
+
+OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
+BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CONTEXT
 
 
 def create_badge_section(config):
@@ -35,11 +39,11 @@ def create_badge_section(config):
         }
     }
 
-    if config.criteria_narrative:
-        badge['criteria'] = {}
-        badge['criteria']['narrative'] = config.criteria_narrative
+    badge['criteria'] = {}
+    badge['criteria']['narrative'] = config.criteria_narrative
 
     if config.issuer_signature_lines:
+        signature_lines = []
         signature_lines = []
         for signature_line in config.issuer_signature_lines:
             signature_image_path = os.path.join(config.abs_data_dir, signature_line['signature_image'])
@@ -62,7 +66,7 @@ def create_badge_section(config):
 def create_verification_section(config):
     verification = {
         'type': ['MerkleProofVerification2017', 'Extension'],
-        'creator': config.issuer_public_key
+        'publicKey': config.issuer_public_key
 
     }
     return verification
@@ -72,21 +76,24 @@ def create_recipient_section(config):
     recipient = {
         'type': 'email',
         'identity': '*|EMAIL|*',
-        'hashed': config.hash_emails,
-        scope_name('recipientProfile'): {
-            'type': ['RecipientProfile', 'Extension'],
-            'name': '*|NAME|*',
-            'publicKey': 'ecdsa-koblitz-pubkey:*|PUBKEY|*'
-        }
+        'hashed': config.hash_emails
     }
     return recipient
+
+
+def create_recipient_profile_section():
+    return {
+        'type': ['RecipientProfile', 'Extension'],
+        'name': '*|NAME|*',
+        'publicKey': 'ecdsa-koblitz-pubkey:*|PUBKEY|*'
+    }
 
 
 def create_assertion_section(config):
     assertion = {
         '@context': [
-            config.obi_v2_context,
-            config.blockcerts_v2_context
+            OPEN_BADGES_V2_CONTEXT,
+            BLOCKCERTS_V2_CONTEXT
         ],
         'type': 'Assertion',
         'issuedOn': '*|DATE|*',
@@ -106,6 +113,7 @@ def create_certificate_template(config):
     verification = create_verification_section(config)
     assertion = create_assertion_section(config)
     recipient = create_recipient_section(config)
+    recipient_profile = create_recipient_profile_section()
 
     template_dir = config.template_dir
     if not os.path.isabs(template_dir):
@@ -113,6 +121,8 @@ def create_certificate_template(config):
     template_file_name = config.template_file_name
 
     assertion['recipient'] = recipient
+    assertion[scope_name('recipientProfile')] = recipient_profile
+
     assertion['badge'] = badge
     assertion['verification'] = verification
 
@@ -126,6 +136,7 @@ def create_certificate_template(config):
 
     template_path = os.path.join(config.abs_data_dir, template_dir, template_file_name)
 
+    print('Writing template to ' + template_path)
     with open(template_path, 'w') as cert_template:
         json.dump(assertion, cert_template)
 
@@ -143,13 +154,13 @@ def get_config():
     p.add_argument('--cert_image_file', type=str, help='issuer logo image file, png format')
     p.add_argument('--issuer_url', type=str, help='issuer URL')
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
-    p.add_argument('--issuer_email', type=str, help='issuer email')
-    p.add_argument('--issuer_name', type=str, help='issuer name')
-    p.add_argument('--issuer_id', type=str, help='issuer profile')
+    p.add_argument('--issuer_email', required=True, type=str, help='issuer email')
+    p.add_argument('--issuer_name', required=True, type=str, help='issuer name')
+    p.add_argument('--issuer_id', required=True, type=str, help='issuer profile')
     p.add_argument('--issuer_key', type=str, help='issuer issuing key')
     p.add_argument('--certificate_description', type=str, help='the display description of the certificate')
-    p.add_argument('--certificate_title', type=str, help='the title of the certificate')
-    p.add_argument('--criteria_narrative', type=str, help='criteria narrative')
+    p.add_argument('--certificate_title', required=True, type=str, help='the title of the certificate')
+    p.add_argument('--criteria_narrative', required=True, type=str, help='criteria narrative')
     p.add_argument('--template_dir', type=str, help='the template output directory')
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--hash_emails', action='store_true',
@@ -157,9 +168,7 @@ def get_config():
 
     p.add_argument('--revocation_list', type=str, help='issuer revocation list')
     p.add_argument('--issuer_public_key', type=str, help='issuer public key')
-    p.add_argument('--badge_id', type=str, help='badge id')
-    p.add_argument('--blockcerts_v2_context', type=str, help='blockcerts v2 context')
-    p.add_argument('--obi_v2_context', type=str, help='OBI v2 context')
+    p.add_argument('--badge_id', required=True, type=str, help='badge id')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
                    help='issuer signature lines')
 

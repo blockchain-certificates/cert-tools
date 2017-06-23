@@ -10,6 +10,7 @@ import configargparse
 
 import helpers
 import jsonpath_helpers
+from cert_schema import *
 
 
 def create_certificate_section(config):
