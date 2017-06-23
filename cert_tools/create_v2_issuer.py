@@ -6,6 +6,7 @@ Currently, just not check for inputs' validity (e.g. valid address, URLs, etc.)
 '''
 import os
 import sys
+from cert_schema import *
 import configargparse
 import json
 from datetime import date
@@ -14,8 +15,8 @@ import helpers
 
 ISSUER_TYPE = 'Profile'
 
-OPEN_BADGES_V2_CONTEXT_JSON = 'https://openbadgespec.org/v2/context.json'
-BLOCKCERTS_V2_CONTEXT_JSON = 'https://w3id.org/blockcerts/schema/2.0-alpha/context.json'
+OPEN_BADGES_V2_CONTEXT_JSON = OPEN_BADGES_V2_CANONICAL_CONTEXT
+BLOCKCERTS_V2_CONTEXT_JSON = BLOCKCERTS_V2_CONTEXT
 
 
 def generate_issuer_file(config):
@@ -35,7 +36,7 @@ def generate_issuer_file(config):
         'name': config.issuer_name,
         'email': config.issuer_email,
         'image': helpers.encode_image(config.issuer_logo_file),
-        'publicKeys': [{'publicKey': config.issuer_public_key, "created": issued_on}],
+        'publicKey': [{'@id': config.issuer_public_key, "created": issued_on}],
         'revocationList': config.revocation_list_uri,
         'type': ISSUER_TYPE
     }

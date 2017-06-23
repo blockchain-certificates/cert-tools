@@ -1,6 +1,5 @@
-cert-schema==2.0b12
-cert-core==2.0b7
-jsonpath-rw>=1.4.0
-tox>=2.7.0
-pycoin>=0.77
+cert-schema==2.0b18
 configargparse>=0.10.0
+jsonpath-rw>=1.4.0
+pycoin>=0.77
+tox>=2.7.0

@@ -11,11 +11,13 @@ import json
 import os
 import uuid
 from datetime import date
+import pytz
+from datetime import datetime
 
 import configargparse
 
-from cert_core.model import scope_name
-from cert_schema.schema_tools import schema_validator
+from cert_schema.model import scope_name
+from cert_schema import schema_validator
 
 import helpers
 import jsonpath_helpers
@@ -32,6 +34,14 @@ class Recipient:
         fields.pop('identity', None)
 
         self.additional_fields = fields
+
+
+def create_iso8601_tz():
+
+    #iso_date = datetime.now().isoformat()
+    tz = pytz.timezone('UTC')
+    aware_dt = tz.localize(datetime.now())
+    return aware_dt.isoformat()
 
 
 def hash_and_salt_email_address(email, salt):
@@ -57,10 +67,10 @@ def instantiate_recipient(config, cert, recipient):
 
     profile_field = scope_name('recipientProfile')
 
-    cert['recipient'][profile_field] = {}
-    cert['recipient'][profile_field]['type'] = ['RecipientProfile', 'Extension']
-    cert['recipient'][profile_field]['name'] = recipient.name
-    cert['recipient'][profile_field]['publicKey'] = 'ecdsa-koblitz-pubkey:' + recipient.pubkey
+    cert[profile_field] = {}
+    cert[profile_field]['type'] = ['RecipientProfile', 'Extension']
+    cert[profile_field]['name'] = recipient.name
+    cert[profile_field]['publicKey'] = 'ecdsa-koblitz-pubkey:' + recipient.pubkey
 
     if config.additional_per_recipient_fields:
         if not recipient.additional_fields:
@@ -77,8 +87,9 @@ def instantiate_recipient(config, cert, recipient):
 def create_unsigned_certificates_from_roster(config):
     roster = os.path.join(config.abs_data_dir, config.roster)
     template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
-    issued_on = str(date.today())
+    issued_on = create_iso8601_tz()
     output_dir = os.path.join(config.abs_data_dir, config.unsigned_certificates_dir)
+    print('Writing certificates to ' + output_dir)
 
     recipients = []
     with open(roster, 'r') as theFile:
