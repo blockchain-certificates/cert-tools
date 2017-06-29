@@ -156,7 +156,7 @@ The steps were:
     - Place the needed images in `images/` and point to them in the config file
     - Run `create_certificate_template.py`, which resulted in the certificate template `/certificate_templates/game_of_thrones_live_template.json`
 - Instantiate the batch
-    - Add the recipient roster (in this case `rosters/game_of_thrones_live_roster.csv`) with the recipient's Bitcoin addresses AND the issuer recipient-specific revocation addresses
+    - Add the recipient roster (in this case `rosters/roster_testnet.csv`) with the recipient's Bitcoin addresses.
     - Run 'instantiate_certificate_batch.py', which resulted in the files in `unsigned_certificates`
     
 Then the unsigned certificates were copied to cert-issuer for signing and issuing on the blockchain.

@@ -16,7 +16,7 @@ from cert_schema import *
 from cert_schema.model import scope_name
 
 OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
-BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CONTEXT
+BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CANONICAL_CONTEXT
 
 
 def create_badge_section(config):

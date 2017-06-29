@@ -10,9 +10,6 @@ import hashlib
 import json
 import os
 import uuid
-from datetime import date
-import pytz
-from datetime import datetime
 
 import configargparse
 
@@ -34,14 +31,6 @@ class Recipient:
         fields.pop('identity', None)
 
         self.additional_fields = fields
-
-
-def create_iso8601_tz():
-
-    #iso_date = datetime.now().isoformat()
-    tz = pytz.timezone('UTC')
-    aware_dt = tz.localize(datetime.now())
-    return aware_dt.isoformat()
 
 
 def hash_and_salt_email_address(email, salt):
@@ -87,7 +76,7 @@ def instantiate_recipient(config, cert, recipient):
 def create_unsigned_certificates_from_roster(config):
     roster = os.path.join(config.abs_data_dir, config.roster)
     template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
-    issued_on = create_iso8601_tz()
+    issued_on = helpers.create_iso8601_tz()
     output_dir = os.path.join(config.abs_data_dir, config.unsigned_certificates_dir)
     print('Writing certificates to ' + output_dir)
 

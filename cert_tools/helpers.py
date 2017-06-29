@@ -2,8 +2,10 @@ import base64
 import json
 import os
 import sys
+from datetime import datetime
 
 import configargparse
+import pytz
 
 if sys.version > '3':
     from urllib.parse import urljoin
@@ -53,3 +55,9 @@ def encode(num, alphabet=BASE62):
         arr.append(alphabet[rem])
     arr.reverse()
     return ''.join(arr)
+
+
+def create_iso8601_tz():
+    tz = pytz.timezone('UTC')
+    aware_dt = tz.localize(datetime.now())
+    return aware_dt.isoformat()
