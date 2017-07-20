@@ -9,8 +9,8 @@ import uuid
 
 import configargparse
 
-import helpers
-import jsonpath_helpers
+from cert_tools import helpers
+from cert_tools import jsonpath_helpers
 
 from cert_schema import *
 from cert_schema.model import scope_name
@@ -144,8 +144,9 @@ def create_certificate_template(config):
 
 
 def get_config():
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf.ini')])
+    cwd = os.getcwd()
+    config_file_path = os.path.join(cwd, 'conf.ini')
+    p = configargparse.getArgumentParser(default_config_files=[config_file_path])
 
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
 
@@ -176,7 +177,7 @@ def get_config():
                    help='additional per-recipient fields')
 
     args, _ = p.parse_known_args()
-    args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
+    args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
     return args
 
 

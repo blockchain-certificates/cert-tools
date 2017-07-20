@@ -14,10 +14,10 @@ from datetime import date
 
 import configargparse
 
-from cert_schema.schema_tools import schema_validator
+from cert_schema import schema_validator
 
-import helpers
-import jsonpath_helpers
+from cert_tools import helpers
+from cert_tools import jsonpath_helpers
 
 
 class Recipient:
@@ -102,8 +102,8 @@ def create_unsigned_certificates_from_roster(config):
 
 
 def get_config():
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf.ini')])
+    cwd = os.getcwd()
+    p = configargparse.getArgumentParser(default_config_files=[os.path.join(cwd, 'conf.ini')])
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')
@@ -115,7 +115,7 @@ def get_config():
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')
     args, _ = p.parse_known_args()
-    args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
+    args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
 
     return args
 

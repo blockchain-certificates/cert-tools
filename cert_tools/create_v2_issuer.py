@@ -10,7 +10,7 @@ from cert_schema import *
 import configargparse
 import json
 
-import helpers
+from cert_tools import helpers
 
 ISSUER_TYPE = 'Profile'
 
@@ -50,8 +50,8 @@ def generate_issuer_file(config):
 
 
 def get_config():
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf.ini')]) 
+    cwd = os.getcwd()
+    p = configargparse.getArgumentParser(default_config_files=[os.path.join(cwd, 'conf.ini')])
     p.add('-c', '--my-config', required=True, is_config_file=True, help='config file path')
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('-k', '--issuer_public_key', type=str, required=True, help='The key(s) an issuer uses to sign Assertions. See https://openbadgespec.org/#Profile for more details')
@@ -65,7 +65,7 @@ def get_config():
     p.add_argument('-i', '--intro_url', required=False, type=str, help='the issuer\'s introduction URL address')
     p.add_argument('-o', '--output_file', type=str, help='the output file to save the issuer\'s identification file')
     args, _ = p.parse_known_args()
-    args.abs_data_dir = os.path.abspath(os.path.join(base_dir, args.data_dir))
+    args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
 
     return args
 

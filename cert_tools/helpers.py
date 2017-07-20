@@ -21,7 +21,6 @@ URN_UUID_PREFIX = 'urn:uuid:'
 def make_action(additional_arg):
     class customAction(configargparse.Action):
         def __call__(self, parser, args, values, option_string=None):
-            print(additional_arg)
             json_obj = json.loads(values)['fields']
             setattr(args, self.dest, json_obj)
 
