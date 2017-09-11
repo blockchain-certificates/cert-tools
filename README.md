@@ -193,7 +193,7 @@ You can specify additional global fields (fields that apply for every certificat
 When adding either global or per-recipient custom fields, you must define each of your new terms in a [JSON-LD context](https://json-ld.org/spec/latest/json-ld/). You can either point to an existing JSON-LD context, or embed them directly in the context of the certificate. For an example of the latter, see the [JSON-LD specification section 3.1](https://json-ld.org/spec/latest/json-ld/#the-context). In this case, the `@context` value would be an array listing the existing context links, and your new definition.
 
 Examples of both options are below:
-
+```
 {
   "@context": [
         "https://w3id.org/openbadges/v2",
@@ -205,7 +205,7 @@ Examples of both options are below:
         }
     ]
 }
-
+```
 
 #### Custom global fields
 
