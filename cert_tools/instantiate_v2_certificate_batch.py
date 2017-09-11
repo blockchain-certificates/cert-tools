@@ -59,7 +59,7 @@ def instantiate_recipient(config, cert, recipient):
     cert[profile_field] = {}
     cert[profile_field]['type'] = ['RecipientProfile', 'Extension']
     cert[profile_field]['name'] = recipient.name
-    cert[profile_field]['publicKey'] = 'ecdsa-koblitz-pubkey:' + recipient.pubkey
+    cert[profile_field]['publicKey'] = recipient.pubkey
 
     if config.additional_per_recipient_fields:
         if not recipient.additional_fields:
