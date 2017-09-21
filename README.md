@@ -239,6 +239,8 @@ or, expanded for readability:
 
 #### Custom per-recipient fields
 
+See above note on (current) manual step of defining custom JSON-LD context.
+
 Per-recipient fields are specified in a combination of the conf.ini file, with the `additional_per_recipient_fields` entry, and the .csv file containing per-recipient data. Per-recipient fields are used in both template creation and certificate instantiaion. During the template creation process, we apply placeholder merge tags as values. This helps you preview your template before running `instantiate_certificate_batch.py`. 
 
 For each additional per-recipient field, you must indicate the following in the `additional_per_recipient_fields` config field:
@@ -251,21 +253,12 @@ Example:
 
 conf.ini version:
 ```
-    additional_per_recipient_fields = {"fields": [{"path": "$.assertion.evidence","value": "*|EVIDENCE|*","csv_column": "evidence"}]}
+    additional_per_recipient_fields = {"fields": [{"path": "$.xyz_custom_field","value": "*|THIS WILL CONTAIN XYZ CUSTOM VALUES|*","csv_column": "xyz_custom_field"}]}
 ```
 
 above expanded for readability:
 ```
-    additional_per_recipient_fields = {
-        "fields": 
-            [
-                {
-                    "path": "$.assertion.evidence",
-                    "value": "*|EVIDENCE|*",
-                    "csv_column": "evidence"
-                }
-            ]
-    }
+TODO
 ```
   
    
