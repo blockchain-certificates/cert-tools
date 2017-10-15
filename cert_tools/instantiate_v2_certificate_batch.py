@@ -13,7 +13,7 @@ import uuid
 
 import configargparse
 
-from cert_schema.model import scope_name
+from cert_core.cert_model.model import scope_name
 from cert_schema import schema_validator
 
 from cert_tools import helpers

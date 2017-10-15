@@ -1,4 +1,5 @@
-cert-schema==2.0.7
+cert-core>=2.1.2
+cert-schema>=2.0.9
 configargparse>=0.12.0
 jsonpath-rw>=1.4.0
 pycoin>=0.80

@@ -12,8 +12,8 @@ import configargparse
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
 
+from cert_core.cert_model.model import scope_name
 from cert_schema import *
-from cert_schema.model import scope_name
 
 OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
 BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CANONICAL_CONTEXT
