@@ -304,4 +304,4 @@ Then the unsigned certificates were copied to cert-issuer for signing and issuin
 
 ## Contact
 
-Contact [info@blockcerts.org](mailto:info@blockcerts.org) with questions
+Contact us at [the Blockcerts community forum](http://community.blockcerts.org/).
