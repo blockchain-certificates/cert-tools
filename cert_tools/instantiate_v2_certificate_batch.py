@@ -9,7 +9,6 @@ import csv
 import hashlib
 import json
 import os
-import uuid
 
 import configargparse
 
@@ -92,7 +91,11 @@ def create_unsigned_certificates_from_roster(config):
         template = json.loads(cert_str)
 
         for recipient in recipients:
-            uid = str(uuid.uuid4())
+            uid = template['badge']['name'] + recipient.identity
+            uid = "".join(c for c in uid if c.isalnum())
+            cert_file = os.path.join(output_dir, uid + '.json')
+            if os.path.isfile(cert_file):
+              continue
 
             cert = copy.deepcopy(template)
 
@@ -102,7 +105,7 @@ def create_unsigned_certificates_from_roster(config):
             # validate certificate before writing
             schema_validator.validate_v2(cert)
 
-            with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
+            with open(cert_file, 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
 
 
