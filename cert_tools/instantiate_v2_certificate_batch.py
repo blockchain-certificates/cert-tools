@@ -92,7 +92,14 @@ def create_unsigned_certificates_from_roster(config):
         template = json.loads(cert_str)
 
         for recipient in recipients:
-            uid = str(uuid.uuid4())
+            if config.filename_format == "certname_identity":
+                uid = template['badge']['name'] + recipient.identity
+                uid = "".join(c for c in uid if c.isalnum())
+            else:
+                uid = str(uuid.uuid4())
+            cert_file = os.path.join(output_dir, uid + '.json')
+            if os.path.isfile(cert_file) and config.no_clobber:
+                continue
 
             cert = copy.deepcopy(template)
 
@@ -102,7 +109,7 @@ def create_unsigned_certificates_from_roster(config):
             # validate certificate before writing
             schema_validator.validate_v2(cert)
 
-            with open(os.path.join(output_dir, uid + '.json'), 'w') as unsigned_cert:
+            with open(cert_file, 'w') as unsigned_cert:
                 json.dump(cert, unsigned_cert)
 
 
@@ -119,6 +126,8 @@ def get_config():
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'), help='additional per-recipient fields')
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')
+    p.add_argument('--filename_format', type=str, help='how to format certificate filenames (one of certname_identity or uuid)')
+    p.add_argument('--no_clobber', action='store_true', help='whether to overwrite existing certificates')
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
 
