@@ -7,7 +7,7 @@ see example of certificate template and batch creation in sample_data
 
 ## Install
 
-1. Ensure you have an python environment. [Recommendations](https://github.com/blockchain-certificates/developer-common-docs/blob/master/virtualenv.md)
+1. Ensure you have an python environment. [Recommendations](https://github.com/blockchain-certificates/cert-issuer/blob/master/docs/virtualenv.md)
 
 2. Git clone the repository and change to the directory
 
