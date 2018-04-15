@@ -138,8 +138,7 @@ The csv file location is configurable via the conf.ini file.
 
 The csv file must always contain:
 
-- familyName
-- givenName
+- name
 - pubkey
 - identity
 
