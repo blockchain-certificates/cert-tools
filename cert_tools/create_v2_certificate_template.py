@@ -96,6 +96,7 @@ def create_assertion_section(config):
             BLOCKCERTS_V2_CONTEXT
         ],
         'type': 'Assertion',
+        'displayHtml': config.display_html,
         'issuedOn': '*|DATE|*',
         'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*'
     }
@@ -175,6 +176,7 @@ def get_config():
                    help='additional global fields')
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'),
                    help='additional per-recipient fields')
+    p.add_argument('--display_html', type=str, help='html content to display')
 
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
