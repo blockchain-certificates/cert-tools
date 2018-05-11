@@ -1,4 +1,4 @@
-cert-core>=2.1.8
+cert-core>=2.1.9
 cert-schema>=2.1.5
 configargparse>=0.13.0
 jsonpath-rw>=1.4.0
