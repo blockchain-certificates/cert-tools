@@ -61,11 +61,15 @@ def instantiate_recipient(config, cert, recipient):
     cert[profile_field]['name'] = recipient.name
     cert[profile_field]['publicKey'] = recipient.pubkey
 
+    # hardcoded hack to get the right values
+    cert['displayHtml'] = cert['displayHtml'].replace('*|NAME|*', recipient.name)
+
     if config.additional_per_recipient_fields:
         if not recipient.additional_fields:
             raise Exception('expected additional recipient fields in the csv file but none found')
         for field in config.additional_per_recipient_fields:
             cert = jsonpath_helpers.set_field(cert, field['path'], recipient.additional_fields[field['csv_column']])
+            cert['displayHtml'] = cert['displayHtml'].replace(field['value'], recipient.additional_fields[field['csv_column']].decode('utf-8'))
     else:
         if recipient.additional_fields:
             # throw an exception on this in case it's a user error. We may decide to remove this if it's a nuisance
@@ -142,4 +146,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

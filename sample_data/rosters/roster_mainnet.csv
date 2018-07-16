@@ -1,3 +1,3 @@
-name,pubkey,identity
-Eularia Landroth,ecdsa-koblitz-pubkey:1AAGG6jirbu9XwikFpkHokbbiYpjVtFe1G,eularia@landroth.org
-Mcallister Greenborough,ecdsa-koblitz-pubkey:18AaFyeWmsasbSh2GsjGTtrNHqiJgsN6nB,mcallister@greenborough.org
+name,pubkey,identity,mention,year
+Jean Paul,ecdsa-koblitz-pubkey:mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc,test@yopmail.com,AB,2014 – 2015
+Alain Roy, ecdsa-koblitz-pubkey:mkwntSiQmc14H65YxwckLenxY3DsEpvFbe,test2@yopmail.com,B,2015 – 2016
