@@ -93,7 +93,10 @@ def create_assertion_section(config):
     assertion = {
         '@context': [
             OPEN_BADGES_V2_CONTEXT,
-            BLOCKCERTS_V2_CONTEXT
+            BLOCKCERTS_V2_CONTEXT,
+            {
+                "displayHtml": { "@id": "schema:description" }
+            }
         ],
         'type': 'Assertion',
         'displayHtml': config.display_html,
