@@ -64,11 +64,16 @@ def create_badge_section(config):
 
 
 def create_verification_section(config):
-    verification = {
-        'type': ['MerkleProofVerification2017', 'Extension'],
-        'publicKey': config.issuer_public_key
+    if config.verification_type == 'openbadge_hosted':
+        verification = {
+            'type': 'hosted'
+        }
+    else:
+        verification = {
+            'type': ['MerkleProofVerification2017', 'Extension'],
+            'publicKey': config.issuer_public_key
 
-    }
+        }
     return verification
 
 
@@ -179,7 +184,8 @@ def get_config():
                    help='additional global fields')
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'),
                    help='additional per-recipient fields')
-    p.add_argument('--display_html', type=str, help='html content to display')
+    p.add_argument('--display_html', type=str, help='html content to display'),
+    p.add_argument('--verification_type', type=str, default='merkle', help='verification type')
 
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
