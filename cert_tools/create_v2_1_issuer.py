@@ -15,7 +15,7 @@ from cert_tools import helpers
 ISSUER_TYPE = 'Profile'
 
 OPEN_BADGES_V2_CONTEXT_JSON = OPEN_BADGES_V2_CANONICAL_CONTEXT
-BLOCKCERTS_V2_CONTEXT_JSON = BLOCKCERTS_V2_CANONICAL_CONTEXT
+BLOCKCERTS_V2_1_CONTEXT_JSON = BLOCKCERTS_V2_1_CANONICAL_CONTEXT
 
 
 def generate_issuer_file(config):
@@ -26,7 +26,7 @@ def generate_issuer_file(config):
         issued_on = helpers.create_iso8601_tz()
     output_handle = open(config.output_file, 'w') if config.output_file else sys.stdout
 
-    context = [OPEN_BADGES_V2_CONTEXT_JSON, BLOCKCERTS_V2_CONTEXT_JSON]
+    context = [OPEN_BADGES_V2_CONTEXT_JSON, BLOCKCERTS_V2_1_CONTEXT_JSON]
 
     issuer_json = {
         '@context': context,
