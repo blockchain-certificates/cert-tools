@@ -24,7 +24,6 @@ def create_badge_section(config):
     issuer_image_path = os.path.join(config.abs_data_dir, config.issuer_logo_file)
     badge = {
         'type': 'BadgeClass',
-        'id': helpers.URN_UUID_PREFIX + config.badge_id,
         'name': config.certificate_title,
         'description': config.certificate_description,
         'image': helpers.encode_image(cert_image_path),
@@ -39,11 +38,15 @@ def create_badge_section(config):
         }
     }
 
+    if config.verification_type == 'openbadge_hosted':
+        badge['id'] = config.badge_id
+    else:
+        badge['id'] = helpers.URN_UUID_PREFIX + config.badge_id
+
     badge['criteria'] = {}
     badge['criteria']['narrative'] = config.criteria_narrative
 
     if config.issuer_signature_lines:
-        signature_lines = []
         signature_lines = []
         for signature_line in config.issuer_signature_lines:
             signature_image_path = os.path.join(config.abs_data_dir, signature_line['signature_image'])
@@ -103,9 +106,14 @@ def create_assertion_section(config):
         ],
         'type': 'Assertion',
         'displayHtml': config.display_html,
-        'issuedOn': '*|DATE|*',
-        'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*'
+        'issuedOn': '*|DATE|*'
     }
+
+    if config.verification_type == 'openbadge_hosted':
+        assertion['id'] = helpers.urljoin_wrapper(config.issuer_certs_url, '*|CERTUID|*')
+    else:
+        assertion['id'] = helpers.URN_UUID_PREFIX + '*|CERTUID|*'
+
     return assertion
 
 
@@ -182,7 +190,7 @@ def get_config():
                    help='additional global fields')
     p.add_argument('--additional_per_recipient_fields', action=helpers.make_action('per_recipient_fields'),
                    help='additional per-recipient fields')
-    p.add_argument('--display_html', type=str, help='html content to display'),
+    p.add_argument('--display_html', type=str, help='html content to display')
     p.add_argument('--verification_type', type=str, default='merkle', help='verification type')
 
     args, _ = p.parse_known_args()

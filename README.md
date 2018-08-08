@@ -41,7 +41,7 @@ The `conf.ini` fields are described below. Optional arguments are in brackets
 ```
 create-certificate-template --help
 
-usage: create_v2_certificate_template.py [-h] [-c MY_CONFIG]
+usage: create_v2_1_certificate_template.py [-h] [-c MY_CONFIG]
                                          [--data_dir DATA_DIR]
                                          [--issuer_logo_file ISSUER_LOGO_FILE]
                                          [--cert_image_file CERT_IMAGE_FILE]
@@ -62,7 +62,8 @@ usage: create_v2_certificate_template.py [-h] [-c MY_CONFIG]
                                          [--issuer_signature_lines ISSUER_SIGNATURE_LINES]
                                          [--additional_global_fields ADDITIONAL_GLOBAL_FIELDS]
                                          [--additional_per_recipient_fields ADDITIONAL_PER_RECIPIENT_FIELDS]
-
+                                         [--display_html DISPLAY_HTML]
+                                         [--verification_type VERIFICATION_TYPE]
 
 Args that start with '--' (eg. --data_dir) can also be set in a config file (./cert-tools/conf.ini or specified via -c). Config file syntax allows: key=value, flag=true, stuff=[a,b,c] (for details, see syntax at https://goo.gl/R74nmi). If an arg is specified in more than one place, then commandline values override config file values which override defaults.
 
@@ -112,8 +113,10 @@ Argument details:
                         additional global fields (default: None)
   --additional_per_recipient_fields ADDITIONAL_PER_RECIPIENT_FIELDS
                         additional per-recipient fields (default: None)
-
-
+  --display_html DISPLAY_HTML
+                        html content to display (default: None)
+  --verification_type VERIFICATION_TYPE
+                        verification type (default: merkle)
 ```
 
 #### About
@@ -159,6 +162,9 @@ usage: instantiate_v2_certificate_batch.py [-h] [-c MY_CONFIG]
                                            [--additional_per_recipient_fields ADDITIONAL_PER_RECIPIENT_FIELDS]
                                            [--unsigned_certificates_dir UNSIGNED_CERTIFICATES_DIR]
                                            [--roster ROSTER]
+                                           [--filename_format FILENAME_FORMAT]
+                                           [--no_clobber]
+                                           [--verification_type VERIFICATION_TYPE]
 
 Args that start with '--' (eg. --data_dir) can also be set in a config file (./cert-tools/conf.ini or specified via -c). Config file syntax allows: key=value, flag=true, stuff=[a,b,c] (for details, see syntax at https://goo.gl/R74nmi). If an arg is specified in more than one place, then commandline values override config file values which override defaults.
 
@@ -181,6 +187,13 @@ Argument details:
                         output directory for unsigned certificates (default:
                         None)
   --roster ROSTER       roster file name (default: None)
+  --filename_format FILENAME_FORMAT
+                        how to format certificate filenames (one of
+                        certname_identity or uuid) (default: None)
+  --no_clobber          whether to overwrite existing certificates (default:
+                        False)
+  --verification_type VERIFICATION_TYPE
+                        verification type (default: merkle)
 
 ```
 

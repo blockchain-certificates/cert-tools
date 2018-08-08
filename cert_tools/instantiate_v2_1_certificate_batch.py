@@ -39,7 +39,12 @@ def hash_and_salt_email_address(email, salt):
 
 def instantiate_assertion(config, cert, uid, issued_on):
     cert['issuedOn'] = issued_on
-    cert['id'] = helpers.URN_UUID_PREFIX + uid
+
+    if config.verification_type == 'openbadge_hosted':
+        cert['id'] = helpers.urljoin_wrapper(config.issuer_certs_url, uid)
+    else:
+        cert['id'] = helpers.URN_UUID_PREFIX + uid
+
     return cert
 
 
@@ -97,7 +102,7 @@ def create_unsigned_certificates_from_roster(config):
                 uid = "".join(c for c in uid if c.isalnum())
             else:
                 uid = str(uuid.uuid4())
-            cert_file = os.path.join(output_dir, uid + '.json')
+            cert_file = os.path.join(output_dir, uid)
             if os.path.isfile(cert_file) and config.no_clobber:
                 continue
 
@@ -127,7 +132,8 @@ def get_config():
     p.add_argument('--unsigned_certificates_dir', type=str, help='output directory for unsigned certificates')
     p.add_argument('--roster', type=str, help='roster file name')
     p.add_argument('--filename_format', type=str, help='how to format certificate filenames (one of certname_identity or uuid)')
-    p.add_argument('--no_clobber', action='store_true', help='whether to overwrite existing certificates')
+    p.add_argument('--no_clobber', action='store_true', help='whether to overwrite existing certificates'),
+    p.add_argument('--verification_type', type=str, default='merkle', help='verification type')
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
 
