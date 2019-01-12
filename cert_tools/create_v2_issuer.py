@@ -23,6 +23,7 @@ def generate_issuer_file(config):
     if config.public_key_created:
         issued_on = config.public_key_created
     else:
+        print(helpers.create_iso8601_tz())
         issued_on = helpers.create_iso8601_tz()
     output_handle = open(config.output_file, 'w') if config.output_file else sys.stdout
 

@@ -6,6 +6,7 @@ unsigned certificates that can be given to cert-issuer.
 '''
 import copy
 import csv
+import sys
 import hashlib
 import json
 import os
@@ -74,6 +75,7 @@ def instantiate_recipient(config, cert, recipient):
 
 
 def create_unsigned_certificates_from_roster(config):
+    csv.field_size_limit(sys.maxsize)
     roster = os.path.join(config.abs_data_dir, config.roster)
     template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
     issued_on = helpers.create_iso8601_tz()
@@ -82,7 +84,7 @@ def create_unsigned_certificates_from_roster(config):
 
     recipients = []
     with open(roster, 'r') as theFile:
-        reader = csv.DictReader(theFile)
+        reader = csv.DictReader(theFile, quoting = csv.QUOTE_MINIMAL)
         for line in reader:
             r = Recipient(line)
             recipients.append(r)
@@ -90,8 +92,10 @@ def create_unsigned_certificates_from_roster(config):
     with open(template) as template:
         cert_str = template.read()
         template = json.loads(cert_str)
-
+        cur = 0
         for recipient in recipients:
+            cur = cur + 1
+            print('Proceeding ' + str(cur) + ' of ' + str(len(recipients)) + ' ...') 
             if config.filename_format == "certname_identity":
                 uid = template['badge']['name'] + recipient.identity
                 uid = "".join(c for c in uid if c.isalnum())
@@ -113,9 +117,15 @@ def create_unsigned_certificates_from_roster(config):
                 json.dump(cert, unsigned_cert)
 
 
-def get_config():
+def get_config(path = None):
     cwd = os.getcwd()
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(cwd, 'conf.ini')])
+    if not path:
+        config_file_path = os.path.join(cwd, 'conf.ini')
+    else:
+        config_file_path = path
+    configargparse.initArgumentParser(name='inst_conf', default_config_files=[config_file_path])
+    p = configargparse.get_argument_parser('inst_conf')
+    
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--issuer_certs_url', type=str, help='issuer certificates URL')

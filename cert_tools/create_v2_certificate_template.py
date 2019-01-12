@@ -147,11 +147,14 @@ def create_certificate_template(config):
     return assertion
 
 
-def get_config():
+def get_config(path = None):
     cwd = os.getcwd()
-    config_file_path = os.path.join(cwd, 'conf.ini')
-    p = configargparse.getArgumentParser(default_config_files=[config_file_path])
-
+    if not path:
+        config_file_path = os.path.join(cwd, 'conf.ini')
+    else:
+        config_file_path = path
+    configargparse.initArgumentParser(name='create_conf', default_config_files=[config_file_path])
+    p = configargparse.get_argument_parser('create_conf')
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
 
     p.add_argument('--data_dir', type=str, help='where data files are located')
