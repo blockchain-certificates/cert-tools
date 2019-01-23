@@ -2,7 +2,7 @@ import base64
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import configargparse
 import pytz
@@ -57,6 +57,5 @@ def encode(num, alphabet=BASE62):
 
 
 def create_iso8601_tz():
-    tz = pytz.timezone('UTC')
-    aware_dt = tz.localize(datetime.now())
-    return aware_dt.isoformat()
+    ret = datetime.now(timezone.utc)
+    return ret.isoformat()
