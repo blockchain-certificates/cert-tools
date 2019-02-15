@@ -13,7 +13,7 @@ from cert_tools import helpers
 from cert_tools import jsonpath_helpers
 
 from cert_core.cert_model.model import scope_name
-from cert_schema import *
+from cert_schema import OPEN_BADGES_V2_CANONICAL_CONTEXT, BLOCKCERTS_V2_CANONICAL_CONTEXT
 
 OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
 BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CANONICAL_CONTEXT
@@ -95,7 +95,7 @@ def create_assertion_section(config):
             OPEN_BADGES_V2_CONTEXT,
             BLOCKCERTS_V2_CONTEXT,
             {
-                "displayHtml": { "@id": "schema:description" }
+                "displayHtml": {"@id": "schema:description"}
             }
         ],
         'type': 'Assertion',
@@ -119,11 +119,6 @@ def create_certificate_template(config):
     recipient = create_recipient_section(config)
     recipient_profile = create_recipient_profile_section()
 
-    template_dir = config.template_dir
-    if not os.path.isabs(template_dir):
-        template_dir = os.path.join(config.abs_data_dir, template_dir)
-    template_file_name = config.template_file_name
-
     assertion['recipient'] = recipient
     assertion[scope_name('recipientProfile')] = recipient_profile
 
@@ -138,13 +133,21 @@ def create_certificate_template(config):
         for field in config.additional_per_recipient_fields:
             assertion = jsonpath_helpers.set_field(assertion, field['path'], field['value'])
 
+    return assertion
+
+
+def write_certificate_template(config):
+    template_dir = config.template_dir
+    if not os.path.isabs(template_dir):
+        template_dir = os.path.join(config.abs_data_dir, template_dir)
+    template_file_name = config.template_file_name
+
+    assertion = create_certificate_template(config)
     template_path = os.path.join(config.abs_data_dir, template_dir, template_file_name)
 
     print('Writing template to ' + template_path)
     with open(template_path, 'w') as cert_template:
         json.dump(assertion, cert_template)
-
-    return assertion
 
 
 def get_config():
@@ -188,7 +191,7 @@ def get_config():
 
 def main():
     conf = get_config()
-    template = create_certificate_template(conf)
+    write_certificate_template(conf)
     print('Created template!')
 
 
