@@ -104,5 +104,7 @@ data/receipts/*.json
 lm_data/*
 lm_conf.ini
 sample_data/*
+data/*
 
 .DS_Store
+*.conf.ini
