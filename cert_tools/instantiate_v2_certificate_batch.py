@@ -22,13 +22,9 @@ from cert_tools import jsonpath_helpers
 
 class Recipient:
     def __init__(self, fields):
-        self.name = fields['name']
-        self.pubkey = fields['pubkey']
-        self.identity = fields['identity']
-
-        fields.pop('name', None)
-        fields.pop('pubkey', None)
-        fields.pop('identity', None)
+        self.name = fields.pop('name')
+        self.pubkey = fields.pop('pubkey')
+        self.identity = fields.pop('identity')
 
         self.additional_fields = fields
 
@@ -37,15 +33,15 @@ def hash_and_salt_email_address(email, salt):
     return 'sha256$' + hashlib.sha256(email + salt).hexdigest()
 
 
-def instantiate_assertion(config, cert, uid, issued_on):
+def instantiate_assertion(cert, uid, issued_on):
     cert['issuedOn'] = issued_on
     cert['id'] = helpers.URN_UUID_PREFIX + uid
     return cert
 
 
-def instantiate_recipient(config, cert, recipient):
+def instantiate_recipient(cert, recipient, additional_fields, hash_emails):
 
-    if config.hash_emails:
+    if hash_emails:
         salt = helpers.encode(os.urandom(16))
         cert['recipient']['hashed'] = True
         cert['recipient']['salt'] = salt
@@ -61,56 +57,71 @@ def instantiate_recipient(config, cert, recipient):
     cert[profile_field]['name'] = recipient.name
     cert[profile_field]['publicKey'] = recipient.pubkey
 
-    if config.additional_per_recipient_fields:
+    if additional_fields:
         if not recipient.additional_fields:
-            raise Exception('expected additional recipient fields in the csv file but none found')
-        for field in config.additional_per_recipient_fields:
+            raise Exception('expected additional recipient fields but none found')
+        for field in additional_fields:
             cert = jsonpath_helpers.set_field(cert, field['path'], recipient.additional_fields[field['csv_column']])
     else:
         if recipient.additional_fields:
             # throw an exception on this in case it's a user error. We may decide to remove this if it's a nuisance
             raise Exception(
-                'there are fields in the csv file that are not expected by the additional_per_recipient_fields configuration')
+                'there are fields that are not expected by the additional_per_recipient_fields configuration')
 
 
-def create_unsigned_certificates_from_roster(config):
-    roster = os.path.join(config.abs_data_dir, config.roster)
-    template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
+def create_unsigned_certificates_from_roster(template, recipients, use_identities, additionalFields, hash_emails):
     issued_on = helpers.create_iso8601_tz()
+
+    certs = {}
+    for recipient in recipients:
+        if use_identities:
+            uid = template['badge']['name'] + recipient.identity
+            uid = "".join(c for c in uid if c.isalnum())
+        else:
+            uid = str(uuid.uuid4())
+
+        cert = copy.deepcopy(template)
+
+        instantiate_assertion(cert, uid, issued_on)
+        instantiate_recipient(cert, recipient, additionalFields, hash_emails)
+
+        # validate certificate before writing
+        schema_validator.validate_v2(cert)
+
+        certs[uid] = cert
+    return certs
+
+
+def get_recipients_from_roster(config):
+    roster = os.path.join(config.abs_data_dir, config.roster)
+    with open(roster, 'r') as theFile:
+        reader = csv.DictReader(theFile)
+        recipients = map(lambda x: Recipient(x), reader)
+        return list(recipients)
+
+
+def get_template(config):
+    template = os.path.join(config.abs_data_dir, config.template_dir, config.template_file_name)
+    with open(template) as template:
+        cert_str = template.read()
+        return json.loads(cert_str)
+
+
+def instantiate_batch(config):
+    recipients = get_recipients_from_roster(config)
+    template = get_template(config)
+    use_identities = config.filename_format == "certname_identity"
+    certs = create_unsigned_certificates_from_roster(template, recipients, use_identities, config.additional_per_recipient_fields, config.hash_emails)
     output_dir = os.path.join(config.abs_data_dir, config.unsigned_certificates_dir)
     print('Writing certificates to ' + output_dir)
 
-    recipients = []
-    with open(roster, 'r') as theFile:
-        reader = csv.DictReader(theFile)
-        for line in reader:
-            r = Recipient(line)
-            recipients.append(r)
+    for uid in certs.keys():
+        cert_file = os.path.join(output_dir, uid + '.json')
+        if os.path.isfile(cert_file) and config.no_clobber:
+            continue
 
-    with open(template) as template:
-        cert_str = template.read()
-        template = json.loads(cert_str)
-
-        for recipient in recipients:
-            if config.filename_format == "certname_identity":
-                uid = template['badge']['name'] + recipient.identity
-                uid = "".join(c for c in uid if c.isalnum())
-            else:
-                uid = str(uuid.uuid4())
-            cert_file = os.path.join(output_dir, uid + '.json')
-            if os.path.isfile(cert_file) and config.no_clobber:
-                continue
-
-            cert = copy.deepcopy(template)
-
-            instantiate_assertion(config, cert, uid, issued_on)
-            instantiate_recipient(config, cert, recipient)
-
-            # validate certificate before writing
-            schema_validator.validate_v2(cert)
-
-            with open(cert_file, 'w') as unsigned_cert:
-                json.dump(cert, unsigned_cert)
+        with open(cert_file, 'w') as unsigned_cert:
+            json.dump(certs[uid], unsigned_cert)
 
 
 def get_config():
@@ -136,10 +147,9 @@ def get_config():
 
 def main():
     conf = get_config()
-    create_unsigned_certificates_from_roster(conf)
+    instantiate_batch(conf)
     print('Instantiated batch!')
 
 
 if __name__ == "__main__":
     main()
-
