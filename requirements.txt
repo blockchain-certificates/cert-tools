@@ -4,3 +4,5 @@ configargparse>=0.13.0
 jsonpath-rw>=1.4.0
 pycoin>=0.80
 tox>=3.0.0
+pytest==5.1.1
+attrdict==2.0.1
