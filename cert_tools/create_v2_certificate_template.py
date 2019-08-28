@@ -13,15 +13,10 @@ from cert_schema import OPEN_BADGES_V2_CANONICAL_CONTEXT, BLOCKCERTS_V2_CANONICA
 
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
+from cert_tools.helpers import get_b64encoded_image
 
 OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
 BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CANONICAL_CONTEXT
-
-
-def _get_b64encoded_image(config, image_field):
-    if config.no_files:
-        return config[image_field]
-    return helpers.encode_image(os.path.join(config.abs_data_dir, config[image_field]))
 
 
 def create_badge_section(config):
@@ -30,15 +25,15 @@ def create_badge_section(config):
         'id': helpers.URN_UUID_PREFIX + config.badge_id,
         'name': config.certificate_title,
         'description': config.certificate_description,
-        'image': _get_b64encoded_image(config, 'cert_image_file'),
+        'image': get_b64encoded_image(config, 'cert_image_file'),
         'issuer': {
             'id': config.issuer_id,
             'type': 'Profile',
             'name': config.issuer_name,
             'url': config.issuer_url,
             'email': config.issuer_email,
-            'image': _get_b64encoded_image(config, 'issuer_logo_file'),
-            'revocationList': config.revocation_list
+            'image': get_b64encoded_image(config, 'issuer_logo_file'),
+            'revocationList': config.revocation_list_uri
         }
     }
 
@@ -55,7 +50,7 @@ def create_badge_section(config):
                         'Extension'
                     ],
                     'jobTitle': signature_line['job_title'],
-                    'image': _get_b64encoded_image(config, 'issuer_signature_file'),
+                    'image': get_b64encoded_image(config, 'issuer_signature_file'),
                     'name': signature_line['name']
                 }
             )
@@ -174,7 +169,7 @@ def get_config():
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--hash_emails', action='store_true',
                    help='whether to hash emails in the certificate')
-    p.add_argument('--revocation_list', type=str, help='issuer revocation list')
+    p.add_argument('--revocation_list_uri', type=str, help='issuer revocation list')
     p.add_argument('--issuer_public_key', type=str, help='issuer public key')
     p.add_argument('--badge_id', required=True, type=str, help='badge id')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),
