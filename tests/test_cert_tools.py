@@ -3,6 +3,7 @@ import os
 
 from cert_tools.create_v2_certificate_template import create_certificate_template
 from cert_tools.create_v2_issuer import generate_issuer, generate_issuer_file
+from cert_tools.instantiate_v2_certificate_batch import create_unsigned_certificates_from_roster
 
 
 def test_create_v2_certificate_template_no_files(config_no_files):
@@ -120,3 +121,20 @@ def test_create_v2_issuer_both_match(config_no_files, config_with_files):
     with open(config_no_files['output_file'], 'r') as written_file:
         written_issuer = json.loads(written_file.read())
     assert issuer_no_files == issuer_with_files == written_issuer
+
+
+def test_create_v2_certificate_no_files(config_no_files, recipients):
+    template_no_files = create_certificate_template(config_no_files)
+    certs = create_unsigned_certificates_from_roster(
+        template_no_files,
+        recipients,
+        False,
+        config_no_files.additional_per_recipient_fields,
+        config_no_files.hash_emails
+    )
+    assert isinstance(certs, dict)
+    assert len(certs.keys()) == 2
+    keys_to_check = ['@context', 'type', 'displayHtml', 'badge', 'verification']
+    for id, cert in certs.items():
+        for key in keys_to_check:
+            assert cert[key] == template_no_files[key]

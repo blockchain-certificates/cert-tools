@@ -1,5 +1,6 @@
 import copy
 import os
+from collections import OrderedDict
 
 import pytest
 from attrdict import AttrDict
@@ -63,3 +64,21 @@ def config_with_files(config_no_files):
     config_with_files['filename_format'] = 'uuid'
     config_with_files['abs_data_dir'] = os.path.abspath(os.path.join(os.getcwd(), config_with_files['data_dir']))
     yield config_with_files
+
+
+@pytest.fixture
+def recipients():
+    yield [
+        AttrDict(
+            name="Eularia Landroth",
+            pubkey="ecdsa-koblitz-pubkey:mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc",
+            identity="eularia@landroth.org",
+            additional_fields=OrderedDict(),
+        ),
+        AttrDict(
+            name="Mcallister Greenborough",
+            pubkey="ecdsa-koblitz-pubkey:mkwntSiQmc14H65YxwckLenxY3DsEpvFbe",
+            identity="mcallister@greenborough.org",
+            additional_fields=OrderedDict(),
+        )
+    ]
