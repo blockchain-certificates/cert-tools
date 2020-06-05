@@ -23,6 +23,7 @@ setup(
     license='MIT',
     author_email='info@blockcerts.org',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     install_requires=reqs,
     include_package_data=True,
