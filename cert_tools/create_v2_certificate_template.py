@@ -8,34 +8,32 @@ import os
 import uuid
 
 import configargparse
+from cert_core.cert_model.model import scope_name
+from cert_schema import OPEN_BADGES_V2_CANONICAL_CONTEXT, BLOCKCERTS_V2_CANONICAL_CONTEXT
 
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
-
-from cert_core.cert_model.model import scope_name
-from cert_schema import OPEN_BADGES_V2_CANONICAL_CONTEXT, BLOCKCERTS_V2_CANONICAL_CONTEXT
+from cert_tools.helpers import get_b64encoded_image
 
 OPEN_BADGES_V2_CONTEXT = OPEN_BADGES_V2_CANONICAL_CONTEXT
 BLOCKCERTS_V2_CONTEXT = BLOCKCERTS_V2_CANONICAL_CONTEXT
 
 
 def create_badge_section(config):
-    cert_image_path = os.path.join(config.abs_data_dir, config.cert_image_file)
-    issuer_image_path = os.path.join(config.abs_data_dir, config.issuer_logo_file)
     badge = {
         'type': 'BadgeClass',
         'id': helpers.URN_UUID_PREFIX + config.badge_id,
         'name': config.certificate_title,
         'description': config.certificate_description,
-        'image': helpers.encode_image(cert_image_path),
+        'image': get_b64encoded_image(config, 'cert_image_file'),
         'issuer': {
             'id': config.issuer_id,
             'type': 'Profile',
             'name': config.issuer_name,
             'url': config.issuer_url,
             'email': config.issuer_email,
-            'image': helpers.encode_image(issuer_image_path),
-            'revocationList': config.revocation_list
+            'image': get_b64encoded_image(config, 'issuer_logo_file'),
+            'revocationList': config.revocation_list_uri
         }
     }
 
@@ -44,9 +42,7 @@ def create_badge_section(config):
 
     if config.issuer_signature_lines:
         signature_lines = []
-        signature_lines = []
         for signature_line in config.issuer_signature_lines:
-            signature_image_path = os.path.join(config.abs_data_dir, signature_line['signature_image'])
             signature_lines.append(
                 {
                     'type': [
@@ -54,7 +50,7 @@ def create_badge_section(config):
                         'Extension'
                     ],
                     'jobTitle': signature_line['job_title'],
-                    'image': helpers.encode_image(signature_image_path),
+                    'image': get_b64encoded_image(config, 'issuer_signature_file'),
                     'name': signature_line['name']
                 }
             )
@@ -107,7 +103,6 @@ def create_assertion_section(config):
 
 
 def create_certificate_template(config):
-
     if not config.badge_id:
         badge_uuid = str(uuid.uuid4())
         print('Generated badge id {0}'.format(badge_uuid))
@@ -157,6 +152,7 @@ def get_config():
 
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
 
+    p.add_argument('--no_files', action='store_true', help='avoid using files as intermediate or final results')
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--issuer_logo_file', type=str, help='issuer logo image file, png format')
     p.add_argument('--cert_image_file', type=str, help='issuer logo image file, png format')
@@ -173,7 +169,7 @@ def get_config():
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--hash_emails', action='store_true',
                    help='whether to hash emails in the certificate')
-    p.add_argument('--revocation_list', type=str, help='issuer revocation list')
+    p.add_argument('--revocation_list_uri', type=str, help='issuer revocation list')
     p.add_argument('--issuer_public_key', type=str, help='issuer public key')
     p.add_argument('--badge_id', required=True, type=str, help='badge id')
     p.add_argument('--issuer_signature_lines', action=helpers.make_action('issuer_signature_lines'),

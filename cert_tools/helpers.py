@@ -5,7 +5,6 @@ import sys
 from datetime import datetime, timezone
 
 import configargparse
-import pytz
 
 if sys.version > '3':
     from urllib.parse import urljoin
@@ -59,3 +58,9 @@ def encode(num, alphabet=BASE62):
 def create_iso8601_tz():
     ret = datetime.now(timezone.utc)
     return ret.isoformat()
+
+
+def get_b64encoded_image(config, image_field):
+    if config.no_files:
+        return config[image_field]
+    return encode_image(os.path.join(config.abs_data_dir, config[image_field]))
