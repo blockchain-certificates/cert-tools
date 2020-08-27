@@ -146,6 +146,7 @@ def get_config():
 
 
 def main():
+    csv.field_size_limit(100000000)
     conf = get_config()
     instantiate_batch(conf)
     print('Instantiated batch!')
