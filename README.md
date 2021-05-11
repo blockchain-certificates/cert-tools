@@ -5,7 +5,7 @@ Command line tools for designing certificate templates, instantiating a certific
 
 See example of certificate template and batch creation in sample_data.
 
-For more information on working with V3 alpha/beta, please see the docs [here](./docs/V3.md).
+For more information on working with V3 beta, please see the docs [here](./docs/V3.md).
 
 ## Install
 

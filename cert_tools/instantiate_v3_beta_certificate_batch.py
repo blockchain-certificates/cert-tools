@@ -69,7 +69,7 @@ def create_unsigned_certificates_from_roster(template, recipients, use_identitie
         instantiate_recipient(cert, recipient, additionalFields)
 
         # validate unsigned certificate before writing
-        schema_validator.validate_v3_alpha(cert, True)
+        schema_validator.validate_v3_beta(cert, True)
 
         certs[uid] = cert
     return certs
