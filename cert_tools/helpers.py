@@ -57,5 +57,4 @@ def encode(num, alphabet=BASE62):
 
 
 def create_iso8601_tz():
-    ret = datetime.now(timezone.utc).isoformat()[:-13]+'Z'
-    return ret.isoformat()
+    return datetime.now(timezone.utc).isoformat()[:-13]+'Z'
