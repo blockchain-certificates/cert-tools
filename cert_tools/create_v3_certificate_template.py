@@ -11,10 +11,7 @@ import configargparse
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
 
-from cert_schema import BLOCKCERTS_V3_BETA_CONTEXT, VERIFIABLE_CREDENTIAL_V1_CONTEXT
-
-# TODO change 'BLOCKCERTS_V3_CONTEXT' to V3 Canonical Context for final release
-BLOCKCERTS_V3_CONTEXT = BLOCKCERTS_V3_BETA_CONTEXT
+from cert_schema import BLOCKCERTS_V3_CONTEXT, VERIFIABLE_CREDENTIAL_V1_CONTEXT
 
 
 def create_credential_subject_section(config):
