@@ -1,11 +1,15 @@
 [![Build Status](https://travis-ci.org/blockchain-certificates/cert-tools.svg?branch=master)](https://travis-ci.org/blockchain-certificates/cert-tools)
 
+# V3 is available
+Blockcerts V3 is now based off W3C Verifiable Credentials specification and does not follow Open Badges V2 nomenclature anymore. To understand the differences between v2 and v3, please refer to the [docs](./docs/V3.md).
+You may also have a look at the [JSONLD and JSON-SCHEMA documents](https://github.com/blockchain-certificates/cert-schema/tree/master/cert_schema/3.0)
+
 # cert-tools
 Command line tools for designing certificate templates, instantiating a certificate batch, and import/export tasks
 
 See example of certificate template and batch creation in sample_data.
 
-For more information on working with V3 beta, please see the docs [here](./docs/V3.md).
+For more information on working with legacy V2, please see the docs [here](./docs/V3.md#running-cert-tools-for-v2).
 
 ## Install
 
@@ -38,31 +42,19 @@ create-certificate-template -c conf.ini
 
 #### Configuration
 
-The `conf.ini` fields are described below. Optional arguments are in brackets
+The `conf.ini` fields are described below. Optional arguments are in brackets.
+
+At this moment this will give a very simple V3 blockcerts that you will likely need to customize further.
 
 ```
 create-certificate-template --help
 
-usage: create_v2_certificate_template.py [-h] [-c MY_CONFIG]
-                                         [--data_dir DATA_DIR]
-                                         [--issuer_logo_file ISSUER_LOGO_FILE]
-                                         [--cert_image_file CERT_IMAGE_FILE]
-                                         [--issuer_url ISSUER_URL]
-                                         [--issuer_certs_url ISSUER_CERTS_URL]
-                                         --issuer_email ISSUER_EMAIL
-                                         --issuer_name ISSUER_NAME
-                                         --issuer_id ISSUER_ID [--issuer_key ISSUER_KEY]
-                                         [--certificate_description CERTIFICATE_DESCRIPTION]
-                                         --certificate_title CERTIFICATE_TITLE
-                                         --criteria_narrative CRITERIA_NARRATIVE
-                                         [--template_dir TEMPLATE_DIR]
+usage: create_v3_certificate_template.py [-h] 
+                                         [-c MY_CONFIG] 
+                                         [--data_dir DATA_DIR] 
+                                         [--issuer_url ISSUER_URL] --issuer_id ISSUER_ID [--template_dir TEMPLATE_DIR] 
                                          [--template_file_name TEMPLATE_FILE_NAME]
-                                         [--hash_emails]
-                                         [--revocation_list REVOCATION_LIST]
-                                         [--issuer_public_key ISSUER_PUBLIC_KEY]
-                                         --badge_id BADGE_ID
-                                         [--issuer_signature_lines ISSUER_SIGNATURE_LINES]
-                                         [--additional_global_fields ADDITIONAL_GLOBAL_FIELDS]
+                                         [--additional_global_fields ADDITIONAL_GLOBAL_FIELDS] 
                                          [--additional_per_recipient_fields ADDITIONAL_PER_RECIPIENT_FIELDS]
 
 
@@ -74,42 +66,14 @@ Argument details:
   -c MY_CONFIG, --my-config MY_CONFIG
                         config file path (default: None)
   --data_dir DATA_DIR   where data files are located (default: None)
-  --issuer_logo_file ISSUER_LOGO_FILE
-                        issuer logo image file, png format (default: None)
-  --cert_image_file CERT_IMAGE_FILE
-                        issuer logo image file, png format (default: None)
   --issuer_url ISSUER_URL
                         issuer URL (default: None)
-  --issuer_certs_url ISSUER_CERTS_URL
-                        issuer certificates URL (default: None)
-  --issuer_email ISSUER_EMAIL
-                        issuer email (default: None)
-  --issuer_name ISSUER_NAME
-                        issuer name (default: None)
   --issuer_id ISSUER_ID
                         issuer profile (default: None)
-  --issuer_key ISSUER_KEY
-                        issuer issuing key (default: None)
-  --certificate_description CERTIFICATE_DESCRIPTION
-                        the display description of the certificate (default:
-                        None)
-  --certificate_title CERTIFICATE_TITLE
-                        the title of the certificate (default: None)
-  --criteria_narrative CRITERIA_NARRATIVE
-                        criteria narrative (default: None)
   --template_dir TEMPLATE_DIR
                         the template output directory (default: None)
   --template_file_name TEMPLATE_FILE_NAME
                         the template file name (default: None)
-  --hash_emails         whether to hash emails in the certificate (default:
-                        False)
-  --revocation_list REVOCATION_LIST
-                        issuer revocation list (default: None)
-  --issuer_public_key ISSUER_PUBLIC_KEY
-                        issuer public key (default: None)
-  --badge_id BADGE_ID   badge id (default: None)
-  --issuer_signature_lines ISSUER_SIGNATURE_LINES
-                        issuer signature lines (default: None)
   --additional_global_fields ADDITIONAL_GLOBAL_FIELDS
                         additional global fields (default: None)
   --additional_per_recipient_fields ADDITIONAL_PER_RECIPIENT_FIELDS
@@ -152,7 +116,8 @@ The `conf.ini` fields are described below. Optional arguments are in brackets
 ```
 instantiate-certificate-batch --help
 
-usage: instantiate_v2_certificate_batch.py [-h] [-c MY_CONFIG]
+usage: instantiate_v2_certificate_batch.py [-h] 
+                                           [-c MY_CONFIG]
                                            [--data_dir DATA_DIR]
                                            [--issuer_certs_url ISSUER_CERTS_URL]
                                            [--template_dir TEMPLATE_DIR]
@@ -197,8 +162,8 @@ Examples of both options are below:
 ```
 {
   "@context": [
-        "https://w3id.org/openbadges/v2",
-        "https://w3id.org/blockcerts/v2",
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/blockcerts/v3",
         "https://your-custom-context/v1",                                <-- option 1: point to custom JSON-LD context
         {                                                                <-- option 2: directly embed in certificate
              "xyz_custom_field": "http://path/to/xyz_custom_field",
