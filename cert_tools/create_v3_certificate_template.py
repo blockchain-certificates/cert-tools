@@ -11,7 +11,7 @@ import configargparse
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
 
-from cert_schema import BLOCKCERTS_V3_CONTEXT, VERIFIABLE_CREDENTIAL_V1_CONTEXT
+from cert_schema import ContextUrls
 
 
 def create_credential_subject_section(config):
@@ -25,11 +25,11 @@ def create_credential_subject_section(config):
 
 
 def create_v3_assertion(config):
+    ContextUrlsInstance = ContextUrls()
     assertion = {
         '@context': [
-            VERIFIABLE_CREDENTIAL_V1_CONTEXT,
-            BLOCKCERTS_V3_CONTEXT,
-            'https://www.w3.org/2018/credentials/examples/v1'  # example subjectCredential type if not overridden
+            ContextUrlsInstance.verifiable_credential(),
+            ContextUrlsInstance.v3_canonical()
         ],
         'type': ["VerifiableCredential", "BlockcertsCredential"],
         "issuer": config.issuer_id,
