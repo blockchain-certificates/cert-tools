@@ -108,6 +108,10 @@ def get_template(config):
 
 
 def instantiate_batch(config):
+    if config.csv_field_limit is not None:
+        print("csv_field_limit set to ", config.csv_field_limit)
+        csv.field_size_limit(config.csv_field_limit)
+
     recipients = get_recipients_from_roster(config)
     template = get_template(config)
     use_identities = config.filename_format == "certname_identity"
@@ -139,6 +143,7 @@ def get_config():
     p.add_argument('--roster', type=str, help='roster file name')
     p.add_argument('--filename_format', type=str, help='how to format certificate filenames (one of certname_identity or uuid)')
     p.add_argument('--no_clobber', action='store_true', help='whether to overwrite existing certificates')
+    p.add_argument('--csv_field_limit', type=str, help='csv field limit')
     args, _ = p.parse_known_args()
     args.abs_data_dir = os.path.abspath(os.path.join(cwd, args.data_dir))
 
