@@ -5,6 +5,7 @@ Creates a certificate template with merge tags for recipient/assertion-specific 
 '''
 import json
 import os
+import uuid
 
 import configargparse
 
@@ -17,7 +18,9 @@ from cert_schema import ContextUrls
 def create_credential_subject_section(config):
     # An example credential subject for those that don't override
     return {
-        'id': "ecdsa-koblitz-pubkey:*|PUBKEY|*",
+        'pubkey': "*|PUBKEY|*",
+        "name": "*|NAME|*",
+        "email": "*|EMAIL|*",
         "alumniOf": {
           "id": config.issuer_url
         }
@@ -34,7 +37,8 @@ def create_v3_assertion(config):
         'type': ["VerifiableCredential", "BlockcertsCredential"],
         "issuer": config.issuer_id,
         'issuanceDate': '*|DATE|*',
-        'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*'
+        'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*',
+        'nonce': '*|NONCE|*'
     }
     return assertion
 
@@ -72,7 +76,7 @@ def write_certificate_template(config):
 
 def get_config():
     cwd = os.getcwd()
-    config_file_path = os.path.join(cwd, 'conf.ini')
+    config_file_path = os.path.join(cwd, 'conf_v2.ini')
     p = configargparse.getArgumentParser(default_config_files=[config_file_path])
 
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')

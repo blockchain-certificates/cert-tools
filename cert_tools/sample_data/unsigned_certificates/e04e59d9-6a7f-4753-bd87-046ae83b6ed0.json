@@ -1,0 +1,22 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://w3id.org/blockcerts/v3"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "BlockcertsCredential"
+  ],
+  "issuer": "https://www.trusticate.xyz/v1/hku/issuer.json",
+  "issuanceDate": "2022-12-22T03:51:18Z",
+  "id": "urn:uuid:e04e59d9-6a7f-4753-bd87-046ae83b6ed0",
+  "nonce": "7d3f9296290f4e0ea6b36c551806bf98",
+  "credentialSubject": {
+    "pubkey": "0x9584731ee69B2738c4C5A3a03737f68aD6C7a69D",
+    "name": "Pranay Periwal",
+    "email": "pranayp@connect.hku.hk",
+    "alumniOf": {
+      "id": "https://www.hku.hk"
+    }
+  }
+}

@@ -4,11 +4,14 @@
     "https://w3id.org/blockcerts/v3"
   ],
   "type": ["VerifiableCredential", "BlockcertsCredential"],
-  "issuer": "https://www.blockcerts.org/samples/2.0/issuer-testnet.json",
+  "issuer": "https://www.trusticate.xyz/v1/hku/issuer.json",
   "issuanceDate": "*|DATE|*",
   "id": "urn:uuid:*|CERTUID|*",
+  "nonce": "*|NONCE|*",
   "credentialSubject": {
-    "id": "ecdsa-koblitz-pubkey:*|PUBKEY|*",
+    "pubkey": "*|PUBKEY|*",
+    "name": "*|NAME|*",
+    "email": "*|EMAIL|*",
     "alumniOf": { "id": "https://www.hku.hk" }
   }
 }

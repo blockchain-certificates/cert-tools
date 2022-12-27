@@ -1,0 +1,17 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://w3id.org/blockcerts/v3"
+  ],
+  "type": ["VerifiableCredential", "BlockcertsCredential"],
+  "issuer": "https://www.trusticate.xyz/v1/hku/issuer.json",
+  "issuanceDate": "2022-12-22T03:51:18Z",
+  "id": "urn:uuid:242b2044-247e-4ea5-95d0-1811b2e20f37",
+  "nonce": "e0d0c2cfbd2d4a8eafc0b6c71ba7c7ca",
+  "credentialSubject": {
+    "pubkey": "0x4471Bdcd177d2f48e2F2df6Aa4570F4F3613Aa77",
+    "name": "Julie Park",
+    "email": "u3571208@connect.hku.hk",
+    "alumniOf": { "id": "https://www.hku.hk" }
+  }
+}

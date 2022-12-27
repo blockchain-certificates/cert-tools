@@ -34,11 +34,14 @@ class Recipient:
 def instantiate_assertion(cert, uid, issued_on):
     cert['issuanceDate'] = issued_on
     cert['id'] = helpers.URN_UUID_PREFIX + uid
+    cert["nonce"] = uuid.uuid4().hex
     return cert
 
 
 def instantiate_recipient(cert, recipient, additional_fields):
-    cert['credentialSubject']['id'] = recipient.pubkey
+    cert['credentialSubject']['pubkey'] = recipient.pubkey
+    cert['credentialSubject']['name'] = recipient.name
+    cert['credentialSubject']['email'] = recipient.identity
 
     if additional_fields:
         if not recipient.additional_fields:
@@ -67,11 +70,11 @@ def create_unsigned_certificates_from_roster(template, recipients, use_identitie
 
         instantiate_assertion(cert, uid, issued_on)
         instantiate_recipient(cert, recipient, additionalFields)
-
         # validate unsigned certificate before writing
         schema_validator.validate_v3(cert, True)
 
         certs[uid] = cert
+
     return certs
 
 
