@@ -17,15 +17,15 @@ from cert_schema import schema_validator
 from cert_tools import helpers
 from cert_tools import jsonpath_helpers
 
+from html_to_img import html_to_img
 
 class Recipient:
     def __init__(self, fields):
-
         # Name & identity aren't required fields in v3.
         # Mostly keeping it for compatibility with existing rosters but if it's a problem,
         # we can remove it and individual's can add them in via 'additional_per_recipient_fields'
         self.name = fields.pop('name')
-        self.pubkey = fields.pop('pubkey')
+        self.publicKey = fields.pop('publicKey')
         self.identity = fields.pop('identity')
 
         self.additional_fields = fields
@@ -35,13 +35,15 @@ def instantiate_assertion(cert, uid, issued_on):
     cert['issuanceDate'] = issued_on
     cert['id'] = helpers.URN_UUID_PREFIX + uid
     cert["nonce"] = uuid.uuid4().hex
+
     return cert
 
 
 def instantiate_recipient(cert, recipient, additional_fields):
-    cert['credentialSubject']['pubkey'] = recipient.pubkey
+    cert['credentialSubject']['publicKey'] = recipient.publicKey
     cert['credentialSubject']['name'] = recipient.name
     cert['credentialSubject']['email'] = recipient.identity
+    cert['credentialSubject']['alumniOf']["id"] = cert["issuer"]["url"]
 
     if additional_fields:
         if not recipient.additional_fields:
@@ -53,6 +55,9 @@ def instantiate_recipient(cert, recipient, additional_fields):
             # throw an exception on this in case it's a user error. We may decide to remove this if it's a nuisance
             raise Exception(
                 'there are fields that are not expected by the additional_per_recipient_fields configuration')
+
+    cert['display']['content'] = html_to_img(recipient.name, cert['credentialSubject']['hasCredential'],
+                                             cert['credentialSubject']['educationalCredentialAwarded'])
 
 
 def create_unsigned_certificates_from_roster(template, recipients, use_identities, additionalFields):
@@ -113,7 +118,7 @@ def instantiate_batch(config):
 def get_config():
     cwd = os.getcwd()
 
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(cwd, 'conf.ini')])
+    p = configargparse.getArgumentParser(default_config_files=[os.path.join(cwd, 'conf_v2.ini')])
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--template_dir', type=str, help='the template output directory')

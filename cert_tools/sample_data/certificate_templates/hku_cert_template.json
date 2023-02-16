@@ -1,0 +1,47 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    {
+      "alumniOf": {
+        "@id": "http://schema.org/alumniOf",
+        "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
+      },
+      "educationalCredentialAwarded": {
+        "@id": "http://schema.org/educationalCredentialAwarded",
+        "@type": "@id"
+      },
+      "hasCredential": {
+        "@id": "https://schema.org/hasCredential",
+        "@type": "@id"
+      }
+    },
+    "https://w3id.org/blockcerts/v3"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "BlockcertsCredential"
+  ],
+  "issuer": {
+    "id": "https://www.trusticate.xyz/v1/hku/issuer.json",
+    "name": "University of Hong Kong",
+    "url": "https://www.hku.hk",
+    "email": "admin@hku.hk"
+  },
+  "issuanceDate": "*|DATE|*",
+  "id": "urn:uuid:*|CERTUID|*",
+  "nonce": "*|NONCE|*",
+  "credentialSubject": {
+    "publicKey": "*|PUBKEY|*",
+    "name": "*|NAME|*",
+    "email": "*|EMAIL|*",
+    "alumniOf": {
+      "id": "*|UNIVERSITY|*"
+    },
+    "hasCredential": "*|DEGREE|*",
+    "educationalCredentialAwarded": "*|HONOURS|*"
+  },
+  "display": {
+    "contentMediaType": "text/html",
+    "content": "*|CERTIFICATE|*"
+  }
+}

@@ -18,12 +18,9 @@ from cert_schema import ContextUrls
 def create_credential_subject_section(config):
     # An example credential subject for those that don't override
     return {
-        'pubkey': "*|PUBKEY|*",
+        'publicKey': "*|PUBKEY|*",
         "name": "*|NAME|*",
         "email": "*|EMAIL|*",
-        "alumniOf": {
-          "id": config.issuer_url
-        }
     }
 
 
@@ -35,10 +32,16 @@ def create_v3_assertion(config):
             ContextUrlsInstance.v3_canonical()
         ],
         'type': ["VerifiableCredential", "BlockcertsCredential"],
-        "issuer": config.issuer_id,
+        "issuer": {
+            "id": config.issuer_id,
+            "name": config.issuer_name,
+            "url": config.issuer_url,
+            "email": config.issuer_email,
+        },
         'issuanceDate': '*|DATE|*',
         'id': helpers.URN_UUID_PREFIX + '*|CERTUID|*',
-        'nonce': '*|NONCE|*'
+        'nonce': '*|NONCE|*',
+
     }
     return assertion
 
@@ -84,6 +87,8 @@ def get_config():
     p.add_argument('--data_dir', type=str, help='where data files are located')
     p.add_argument('--issuer_url', type=str, help='issuer URL')
     p.add_argument('--issuer_id', required=True, type=str, help='issuer profile')
+    p.add_argument('--issuer_name', required=True, type=str, help='issuer name')
+    p.add_argument('--issuer_email', required=True, type=str, help='issuer email')
     p.add_argument('--template_dir', type=str, help='the template output directory')
     p.add_argument('--template_file_name', type=str, help='the template file name')
     p.add_argument('--additional_global_fields', action=helpers.make_action('global_fields'),

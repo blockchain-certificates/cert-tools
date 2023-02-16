@@ -31,7 +31,7 @@ def generate_revocation_addresses(config):
 
 def get_config():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf.ini')])
+    p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf_v2.ini')])
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
     p.add_argument('-k', '--extended_public_key', type=str, required=True,
                    help='the HD extended public key used to generate the revocation addresses')
