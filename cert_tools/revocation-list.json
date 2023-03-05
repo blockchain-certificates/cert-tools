@@ -1,0 +1,9 @@
+{
+  "@context": [
+    "https://w3id.org/openbadges/v2"
+  ],
+  "id": "https://www.trusticate.xyz/v1/hku/revocation-list.json",
+  "issuer": "https://www.trusticate.xyz/v1/hku/issuer.json",
+  "type": "RevocationList",
+  "revokedAssertions": []
+}

@@ -11,7 +11,7 @@
   "publicKey": [
     {
       "id": "0x1d415BEFf60fe93405a31a301871af0aA3d3F678",
-      "created": "2023-01-30T13:28:45Z"
+      "created": "2023-02-17T08:53:26Z"
     }
   ],
   "revocationList": "https://www.trusticate.xyz/v1/hku/revocation-list.json",

@@ -13,7 +13,7 @@ from pycoin.key.BIP32Node import BIP32Node
 
 def generate_revocation_addresses(config):
     key_path = config.key_path if config.key_path else ''
-    output_handle = open(config.output_file, 'w') if config.output_file else sys.stdout
+    output_handle = open(config.output_file_revocation, 'w') if config.output_file_revocation else sys.stdout
 
     try:
         key = BIP32Node.from_text(config.extended_public_key)
@@ -33,7 +33,7 @@ def get_config():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     p = configargparse.getArgumentParser(default_config_files=[os.path.join(base_dir, 'conf_v2.ini')])
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
-    p.add_argument('-k', '--extended_public_key', type=str, required=True,
+    p.add_argument('-k', '--extended_public_key', type=str, required=False,
                    help='the HD extended public key used to generate the revocation addresses')
     p.add_argument('-p', '--key_path', type=str,
                    help='the key path used to derive the child key under which the addresses will be generated')
